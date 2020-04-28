@@ -1,11 +1,8 @@
-# Object-oriented concepts project
-
-Polytech ET3 IT - Noted project for S6
-
 # opendata-biblio
+
 ## Objectives / Asked work
 
-- [Subject link](./co-projet.pdf)
+[Subject link](./co-projet.pdf)
 
 ## Getting Started
 
