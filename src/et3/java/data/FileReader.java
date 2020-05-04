@@ -8,6 +8,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 
+ * @author EugenieBrasier, Lucas, Antonin
+ */
 public class FileReader
 {
     public static void getDataFromCSVFile(String csvFilePath)

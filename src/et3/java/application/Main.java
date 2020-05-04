@@ -4,6 +4,10 @@ import java.io.File;
 
 import et3.java.data.FileReader;
 
+/**
+ *
+ * @author EugenieBrasier, Lucas, Antonin
+ */
 public class Main
 {
     public static void main(String[] args)
@@ -23,12 +27,12 @@ public class Main
             }
             else
             {
-                System.out.println("[Main] No file " + args[0]);
+                System.err.println("[Main] No file " + args[0]);
             }
         }
         else
         {
-            System.out.println("[Main] You should enter the CSV file path as a parameter.");
+            System.err.println("[Main] You should enter the CSV file path as a parameter.");
         }
         
         //TODO Project :)

@@ -11,6 +11,19 @@
 
 - Structure du starter pack modifiable
 
+### Questions / réponses
+
+> Pour qu’il l’emprunte, on choisit nous même le moyen de rechercher le livre à emprunter ?
+> Par exemple pour réserver tel livre, l’utilisateur peut rechercher via l’ISBN ? Le nom du livre/auteur ?
+Réponse : Oui, (réutiliser un moyen qui existe déjà)
+
+> [Fonctionnalité 4 à 9] - Quand on parle de "consulter ... l’ensemble du **réseau**" : est-ce que les documents empruntés (non disponibles) sont comptabilisés ?
+Pas en ce qui concerne les bibliothèques mais les documents empruntés font bien parti du réseau
+
+> [Fonctionnalité "rendre un document"] - Le document peut-il être rendu à une autre biblio que celle de base ?
+Oui, les livres peuvent être rendus dans une bibliothèque différente de celle de l'emprunt 
+
+
 
 ### Interface console :
 Demande à l'utilisateur l'action qu'il souhaite faire (action n°4 = faire ceci, ...)
@@ -18,11 +31,6 @@ Demande à l'utilisateur l'action qu'il souhaite faire (action n°4 = faire ceci
 - "2"/ Ajouter document dans réseau (ISBN unique ! EAN unique ! vérifier si existe déjà)
 - "3"/ Ajouter nouvel utilisateur ... capacité d'emprunter/rendre doc
 - "4"/ Afficher, trier documents...
-
-
-> Pour qu’il l’emprunte, on choisit nous même le moyen de rechercher le livre à emprunter ?
-> Par exemple pour réserver tel livre, l’utilisateur peut rechercher via l’ISBN ? Le nom du livre/auteur ?
-Réponse : Oui, (réutiliser un moyen qui existe déjà)
 
 
 ### Rendu :
