@@ -1,5 +1,6 @@
 package et3.java.data;
 
+import et3.java.application.DB;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -14,6 +15,11 @@ import java.util.List;
  */
 public class FileReader
 {
+    /**
+     *
+     * @param csvFilePath
+     * @author EugenieBrasier
+     */
     public static void getDataFromCSVFile(String csvFilePath)
     {
         String line = "";
@@ -203,5 +209,17 @@ public class FileReader
         {
             System.err.println(exception);
         }
+    }
+    
+    /**
+     *
+     * @param csvFilePath
+     * @return
+     */
+    public static DB loadDataFromCSVFile(String csvFilePath)
+    {
+        // TODO - implement loadDataFromCSVFile
+        // same as getDataFromCSVFile but fill collections of a DB class
+        throw new UnsupportedOperationException();
     }
 }

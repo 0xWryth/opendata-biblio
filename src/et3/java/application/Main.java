@@ -37,4 +37,12 @@ public class Main
         
         //TODO Project :)
     }
+    
+    /**
+     * Defines actions to do when a key has been pressed.
+     */
+    public void handleKeyboard() {
+        // TODO
+        throw new UnsupportedOperationException();
+    }
 }
