@@ -1,6 +1,8 @@
 package et3.java.data;
 
 import et3.java.application.DB;
+import et3.java.model.*;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -10,7 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
+ * FileReader is an utility class used to parse a .csv into a DB wich can be
+ * manipulated by the user.
  * @author EugenieBrasier, Lucas, Antonin
  */
 public class FileReader
@@ -148,7 +151,7 @@ public class FileReader
                 //Get the number of copy in the library "Edmond Rostand"
                 try
                 {
-                    numberCopyEdmondRostand = Integer.parseInt(data[11]);
+                    numberCopyEdmondRostand = Integer.parseInt(data[12]);
                 }
                 catch (Exception exception)
                 {
@@ -158,7 +161,7 @@ public class FileReader
                 //Get the number of copy in the library "Jean-Pierre Melville"
                 try
                 {
-                    numberCopyJeanPierreMelville = Integer.parseInt(data[11]);
+                    numberCopyJeanPierreMelville = Integer.parseInt(data[13]);
                 }
                 catch (Exception exception)
                 {
@@ -168,7 +171,7 @@ public class FileReader
                 //Get the number of copy in the library "Oscar Wilde"
                 try
                 {
-                    numberCopyOscarWilde = Integer.parseInt(data[11]);
+                    numberCopyOscarWilde = Integer.parseInt(data[14]);
                 }
                 catch (Exception exception)
                 {
@@ -178,7 +181,7 @@ public class FileReader
                 //Get the number of copy in the library "Saint-Simon"
                 try
                 {
-                    numberCopySaintSimon = Integer.parseInt(data[11]);
+                    numberCopySaintSimon = Integer.parseInt(data[15]);
                 }
                 catch (Exception exception)
                 {
@@ -188,21 +191,21 @@ public class FileReader
                 //TODO Do something with data
                 
                 System.out.println( isbn + ";" +
-                                    ean + ";" +
-                                    title + ";" +
-                                    publisher + ";" +
-                                    date + ";" +
-                                    seriesTitle + ";" +
-                                    seriesNumber + ";" +
-                                    authorName + ";" +
-                                    authorSurname + ";" +
-                                    type + ";" +
-                                    totalCopies + ";" +
-                                    numberCopyAimeCesaire + ";" +
-                                    numberCopyEdmondRostand + ";" +
-                                    numberCopyJeanPierreMelville + ";" +
-                                    numberCopyOscarWilde + ";" +
-                                    numberCopySaintSimon);
+                        ean + ";" +
+                        title + ";" +
+                        publisher + ";" +
+                        date + ";" +
+                        seriesTitle + ";" +
+                        seriesNumber + ";" +
+                        authorName + ";" +
+                        authorSurname + ";" +
+                        type + ";" +
+                        totalCopies + ";" +
+                        numberCopyAimeCesaire + ";" +
+                        numberCopyEdmondRostand + ";" +
+                        numberCopyJeanPierreMelville + ";" +
+                        numberCopyOscarWilde + ";" +
+                        numberCopySaintSimon);
             }
         }
         catch (IOException exception)
@@ -218,8 +221,55 @@ public class FileReader
      */
     public static DB loadDataFromCSVFile(String csvFilePath)
     {
-        // TODO - implement loadDataFromCSVFile
-        // same as getDataFromCSVFile but fill collections of a DB class
-        throw new UnsupportedOperationException();
+        Library libAimeCesaire = new Library("Aime Cesaire");
+        Library libEdmondRostand = new Library("Edmond Rostand");
+        Library libJeanPierreMelville = new Library("Jean Pierre Melville");
+        Library libOscarWilde = new Library("Oscar Wilde");
+        Library libSaintSimon = new Library("Saint Simon");
+        
+        /* /!\ PSEUDO CODE :
+        
+            for(each doc)
+                if(EAN)
+                    doc.ean = ...;
+                if(ISBN)
+                    (Book)doc.isbn = ...;
+                if(noEAN & noISBN)
+                    continue;
+                ...
+                system.getAuthor(firstname, lastname);
+                if(unknown)
+                    auth = syst.createAuth();
+                else
+                    doc.auth = existingAuth;
+                ...
+                doc.publisher = publisher;
+                switch(type){
+                    case XXX:
+                        (XXX)doc;
+                        ...
+                }
+                if(seriesExists){...}
+                doc.date = date;
+                system.addDoc(doc);
+                lib1.addDoc(doc);
+                ...
+                libN.addDoc(doc);
+            endFor
+        */
+        
+        DB db = new DB();
+        
+        db.addLibrary(libAimeCesaire);
+        db.addLibrary(libEdmondRostand);
+        db.addLibrary(libJeanPierreMelville);
+        db.addLibrary(libOscarWilde);
+        db.addLibrary(libSaintSimon);
+        
+        // db.addDocuments();
+        // db.addAuthor();
+        // db.addSerie();
+        
+        return db;
     }
 }

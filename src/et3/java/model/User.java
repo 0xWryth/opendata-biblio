@@ -2,10 +2,19 @@ package et3.java.model;
 
 import java.util.*;
 
+/**
+ * The User class represents an user of the libraries. He can subscribe /
+ * unsubscribe himself to a library in order to borrow documents.
+ */
 public class User extends Person {
-    
-    private ArrayList<Library> registredUsers;
-    private HashMap<Integer, Integer> registredLib;
+    private static int nextId = 1;
+    private final int id;
+    private HashMap<Integer, Integer> registredLib;     // first int : lib id, second : quota allowed
+
+    public User(String name, String surname) {
+        super(name, surname);
+        this.id = User.nextId++;
+    }
     
     /**
      *
@@ -31,7 +40,7 @@ public class User extends Person {
      *
      * @param lib
      */
-    public void register(Library lib) {
+    public void subscribe(Library lib) {
         // TODO - implement User.register
         throw new UnsupportedOperationException();
     }

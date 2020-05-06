@@ -5,7 +5,8 @@ import java.io.File;
 import et3.java.data.FileReader;
 
 /**
- *
+ * Main is the class where the user can operate on a "database" that contains
+ * the representation of the entities involved in the "open data biblio case".
  * @author EugenieBrasier, Lucas, Antonin
  */
 public class Main
