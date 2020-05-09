@@ -8,7 +8,7 @@ public class Book extends Document {
     
     private String ISBN;
 
-    public Book(String title, String EAN, String date, String publisher, String isbn) {
+    public Book(String title, String EAN, String isbn, String date, String publisher) {
         // TODO : manage books with ISBN but no EAN
         super(title, EAN, date, publisher);
         this.ISBN = isbn;

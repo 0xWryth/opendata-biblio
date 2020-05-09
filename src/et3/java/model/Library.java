@@ -1,6 +1,7 @@
 package et3.java.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Library is a class that represents a real library that contains documents
@@ -10,21 +11,19 @@ public class Library {
     private static int nextId = 1;
     private final int id;
     private String name;
-    private ArrayList<Document> documents;
+    private HashMap<Document, Integer> documents;
     private ArrayList<User> registredUsers;
 
     public Library(String name) {
         this.id = Library.nextId++;
         this.name = name;
-        this.documents = new ArrayList<>();
+        this.documents = new HashMap<>();
         this.registredUsers = new ArrayList<>();
     }
     
-    public void addDoc(Document... docs) {
-        for (Document doc : docs) {
-            // TODO : check if it already exists before adding
-            this.documents.add(doc);
-        }
+    public void addDoc(Document doc, int numberOfDoc) {
+        // TODO : check if it already exists before adding (just add +1 in "quantity")
+        this.documents.put(doc, numberOfDoc);
     }
     
     /**

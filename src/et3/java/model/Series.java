@@ -18,4 +18,10 @@ public class Series {
     }
     
     public int getId() { return id; }
+
+    public void addDoc(Document newDoc) {
+        // TODO : check if not already exists
+        this.documents.add(newDoc);
+        // newDoc.addSerie(this); ?????
+    }
 }

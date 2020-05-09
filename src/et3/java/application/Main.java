@@ -13,6 +13,8 @@ public class Main
 {
     public static void main(String[] args)
     {
+        DB db = null;
+        
         if(args.length > 0)
         {
             File tempFile = new File(args[0]);
@@ -22,7 +24,8 @@ public class Main
                 System.out.println("[Main] Reading the file " + args[0] + " ...");
                 
                 //We start by reading the CSV file
-                FileReader.getDataFromCSVFile(args[0]);
+//                FileReader.getDataFromCSVFile(args[0]);
+                db = FileReader.loadDataFromCSVFile(args[0]);
                 
                 System.out.println("[Main] End of the file " + args[0] + ".");
             }
@@ -37,6 +40,11 @@ public class Main
         }
         
         //TODO Project :)
+        if (db == null)
+            return;
+            
+        db.listLibraries();
+        db.listDocuments();
     }
     
     /**

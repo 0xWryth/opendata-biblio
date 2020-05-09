@@ -27,7 +27,7 @@ public class DB {
         this.users = new HashMap<>();
     }
 
-    public void addDocuments(Document doc) {
+    public void addDocument(Document doc) {
         this.docs.add(doc);
     }
 
@@ -42,8 +42,64 @@ public class DB {
     public void addLibrary(Library lib) {
         this.libs.putIfAbsent(lib.getId(), lib);
     }
+
+    public void listLibraries() {
+//        for (TypeKey name: example.keySet()){
+//            String key = name.toString();
+//            String value = example.get(name).toString();  
+//            System.out.println(key + " " + value);  
+//        }
+        
+        this.libs.entrySet().forEach(entry -> {
+            System.out.println(entry.getValue());  
+         });
+    }
+
+    public void listDocuments() {
+        for (Document doc : this.docs) {
+            System.out.println(doc);
+        }
+    }
     
     /*
         addUser()..
     */
+
+    /**
+     * Return the corresponding Series or a new Series if not found in db.
+     * @param seriesTitle
+     * @return 
+     */
+    public Series getSeries(String seriesTitle) {
+        /* TODO : search in list + add in seriesList */
+        
+        Series existingSeries = null;  // = seriesList.search(seriesTitle);
+        
+        if (existingSeries == null) {
+            existingSeries = new Series(seriesTitle);
+            // add it to seriesList
+        }
+        
+        return existingSeries;
+    }
+
+    /**
+     * Return the corresponding Author or a new Author if not found in db.
+     * @param authorName
+     * @param authorSurname
+     * @return 
+     */
+    public Author getAuthor(String authorName, String authorSurname) {
+        /* TODO : One field can be empty at most */
+        /* TODO : search in list */
+        
+        Author existingAuthor = null;  // = authList.search(authorName, authorSurname);
+        
+        if (existingAuthor == null) {
+            existingAuthor = new Author(authorName, authorSurname);
+            authList.put(existingAuthor.getId(), existingAuthor);
+        }
+        
+        return existingAuthor;
+    }
 }

@@ -63,4 +63,8 @@ public abstract class Document {
                 + "\", author=" + author + ", EAN=" + EAN
                 + ", published in " + date + " by " + publisher;
     }
+
+    public void setAuthor(Author docAuthor) {
+        this.author = docAuthor;
+    }
 }

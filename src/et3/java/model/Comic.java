@@ -6,8 +6,8 @@ package et3.java.model;
  */
 public class Comic extends Book {
     
-    public Comic(String title, String EAN, String date, String publisher, String isbn) {
-        super(title, EAN, date, publisher, isbn);
+    public Comic(String title, String EAN, String isbn, String date, String publisher) {
+        super(title, EAN, isbn, date, publisher);
     }
     
 }
