@@ -13,6 +13,7 @@ public class Library {
     private String name;
     private HashMap<Document, Integer> documents;
     private ArrayList<User> registredUsers;
+    private final int STANDARD_QUOTA = 5;
 
     public Library(String name) {
         this.id = Library.nextId++;
@@ -31,8 +32,27 @@ public class Library {
      * @param user
      */
     public void registerUser(User user) {
-        // TODO : check if it already exists before adding
-        this.registredUsers.add(user);
+        if (!this.registredUsers.contains(user)) {
+            this.registredUsers.add(user);
+            user.subscribe(this, STANDARD_QUOTA);
+        } else {
+            System.err.println("Impossible d'inscrire l'utilisateur " + user.getName() + " " + user.getSurname() + " car il semble déjà abonné à cette bibliothèque.");
+        }
+    }
+    
+    /**
+     *
+     * @param user
+     */
+    public void removeUser(User user) {
+        
+        /* TODO : return documents before unsubscribe ! */
+        
+        if (this.registredUsers.remove(user)) {
+            user.unsubscribe(this);
+        } else {
+            System.err.println("Impossible d'annuler l'abonnement car cet utilisateur ne semble pas être abonné à cette bibliothèque.");
+        }
     }
     
     /**
@@ -72,7 +92,7 @@ public class Library {
 
     @Override
     public String toString() {
-        return "Library "+ id + " : " + name + '}';
+        return "Library "+ id + " : " + name;
     }
 
     public int getId() { return id; }

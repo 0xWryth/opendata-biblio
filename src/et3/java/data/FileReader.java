@@ -1,6 +1,6 @@
 package et3.java.data;
 
-import et3.java.application.DB;
+import et3.java.application.Network;
 import et3.java.model.*;
 
 import java.io.BufferedReader;
@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * FileReader is an utility class used to parse a .csv into a DB wich can be
- * manipulated by the user.
+ * FileReader is an utility class used to parse a .csv into a Network wich can
+ * be manipulated by the user.
  * @author EugenieBrasier, Lucas, Antonin
  */
 public class FileReader
@@ -217,9 +217,9 @@ public class FileReader
     /**
      *
      * @param csvFilePath
-     * @return
+     * @return A filled Network object
      */
-    public static DB loadDataFromCSVFile(String csvFilePath)
+    public static Network loadDataFromCSVFile(String csvFilePath)
     {
         Library libAimeCesaire = new Library("Aime Cesaire");
         Library libEdmondRostand = new Library("Edmond Rostand");
@@ -227,7 +227,7 @@ public class FileReader
         Library libOscarWilde = new Library("Oscar Wilde");
         Library libSaintSimon = new Library("Saint Simon");
         
-        DB db = new DB();
+        Network network = new Network();
         
         String line = "";
         String[] data = null;
@@ -467,7 +467,7 @@ public class FileReader
                 
                 
                 if (!authorName.equals("") || !authorSurname.equals("")) {
-                    Author docAuthor = db.getAuthor(authorName, authorSurname);
+                    Author docAuthor = network.getAuthor(authorName, authorSurname);
                     newDoc.setAuthor(docAuthor);
                 }
                 
@@ -478,13 +478,13 @@ public class FileReader
                 
                 
                 
-                // if (noSameDoc in DB)
-                    db.addDocument(newDoc);
+                // if (noSameDoc in Network)
+                    network.addDocument(newDoc);
                 // else
                 //    ?
                 
                 if (!seriesTitle.equals("")) {
-                    Series docSerie = db.getSeries(seriesTitle);
+                    Series docSerie = network.getSeries(seriesTitle);
                     docSerie.addDoc(newDoc);
                 }
                 
@@ -501,12 +501,12 @@ public class FileReader
         }
         
         
-        db.addLibrary(libAimeCesaire);
-        db.addLibrary(libEdmondRostand);
-        db.addLibrary(libJeanPierreMelville);
-        db.addLibrary(libOscarWilde);
-        db.addLibrary(libSaintSimon);
+        network.addLibrary(libAimeCesaire);
+        network.addLibrary(libEdmondRostand);
+        network.addLibrary(libJeanPierreMelville);
+        network.addLibrary(libOscarWilde);
+        network.addLibrary(libSaintSimon);
         
-        return db;
+        return network;
     }
 }

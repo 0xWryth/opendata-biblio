@@ -14,6 +14,7 @@ public class User extends Person {
     public User(String name, String surname) {
         super(name, surname);
         this.id = User.nextId++;
+        this.registredLib = new HashMap<>();
     }
     
     /**
@@ -39,10 +40,10 @@ public class User extends Person {
     /**
      *
      * @param lib
+     * @param quota
      */
-    public void subscribe(Library lib) {
-        // TODO - implement User.register
-        throw new UnsupportedOperationException();
+    public void subscribe(Library lib, int quota) {
+        this.registredLib.put(lib.getId(), quota);
     }
     
     /**
@@ -50,8 +51,11 @@ public class User extends Person {
      * @param lib
      */
     public void unsubscribe(Library lib) {
-        // TODO - implement User.unsubscribe
-        throw new UnsupportedOperationException();
+        this.registredLib.remove(lib.getId());
+    }
+
+    public int getId() {
+        return this.id;
     }
     
 }
