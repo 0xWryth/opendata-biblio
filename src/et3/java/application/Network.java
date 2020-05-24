@@ -63,8 +63,10 @@ public class Network {
         this.seriesList.putIfAbsent(series.getId(), series);
     }
 
-    
-    
+    public HashMap<Integer, Library> getLibs() {
+        return libs;
+    }
+
     // Change parameter to String to do the new Library() inside the method ??
     
     public void addLibrary(Library lib) {
@@ -156,5 +158,17 @@ public class Network {
             // Add the unknown library on the fly ??
             System.err.println("La bibliothèque associée ne fait pas partie du réseau.");
         }
+    }
+
+    public ArrayList<Document> getDocs() {
+        return docs;
+    }
+
+    public HashMap<Integer, Author> getAuthList() {
+        return authList;
+    }
+
+    public HashMap<Integer, User> getUsers() {
+        return users;
     }
 }

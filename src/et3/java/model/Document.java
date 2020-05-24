@@ -71,4 +71,20 @@ public abstract class Document {
     public String getEAN() {
         return EAN;
     }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public Author getAuthor() {
+        return author;
+    }
 }

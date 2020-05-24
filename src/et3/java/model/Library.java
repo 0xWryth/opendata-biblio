@@ -96,4 +96,8 @@ public class Library {
     }
 
     public int getId() { return id; }
+
+    public String getName() {
+        return name;
+    }
 }

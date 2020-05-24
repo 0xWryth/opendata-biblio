@@ -3,11 +3,14 @@ package et3.java.application;
 import java.io.File;
 
 import et3.java.data.FileReader;
+import et3.java.gui.Window;
 import et3.java.model.Author;
 import et3.java.model.Document;
 import et3.java.model.Library;
 import et3.java.model.Plan;
 import et3.java.model.User;
+
+import javax.swing.*;
 
 /**
  * Main is the class where the user can operate on a "database" that contains
@@ -18,6 +21,8 @@ public class Main
 {
     public static void main(String[] args)
     {
+        JFrame f = new Window();
+
         Network network = null;
         
         if(args.length > 0)
@@ -104,8 +109,14 @@ public class Main
 
         network.addDocument(carteAlpes); // triggers Serr()
         // ------------------------------------------------------------------------------
+
+        ((Window) f).setLibraryData(network.getLibs());
+        ((Window) f).setDocData(network.getDocs());
+        ((Window) f).setAuthorData(network.getAuthList());
+        ((Window) f).setUserData(network.getUsers());
     }
-    
+
+
     /**
      * Defines actions to do when a key has been pressed.
      */
