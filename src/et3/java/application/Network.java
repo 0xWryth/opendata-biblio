@@ -28,9 +28,31 @@ public class Network {
     }
 
     public void addDocument(Document doc) {
-        // TODO : check EAN and/or ISBN before adding
-        
-        this.docs.add(doc);
+        try {
+            // We got different case
+            // Case 1: doc is not a Book
+            //      => If 2 EAN are the same => skip
+            // Case 2: doc is Book
+            //      Case 2.a: ISBN is empty
+            //          => If 2 EAN are the same => skip
+            //      Case 2.b: ISBN is not empty
+            //          => If 2 ISBN are the same => skip
+
+            Document skip = this.docs.stream()
+                .filter(d -> (
+                        (d instanceof Book && doc instanceof Book &&
+                            ((Book) doc).getISBN().length() != 0 &&
+                            ((Book) doc).getISBN().equals(((Book) d).getISBN())) || (
+                                    d.getEAN().equals(doc.getEAN())
+                                )
+                ))
+                .findFirst()
+                .orElseThrow(Exception::new);
+            System.err.println("Le document " + skip.toString() + " n'a pas été ajouté car il existe déjà.");
+        } catch (Exception e) {
+            // If an exception is thrown, then no duplicate doc has been found
+            this.docs.add(doc);
+        }
     }
 
     public void addAuthor(Author auth) {

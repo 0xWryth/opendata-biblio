@@ -47,29 +47,63 @@ public class Main
         //TODO Project :)
         if (network == null)
             return;
-        
-        Library newLib = new Library("Médithèque des quais");
-            
-        network.addLibrary(newLib);
-        network.addLibrary(newLib);     // triggers Serr("non add car existe")
-        network.addLibrary(new Library("Médithèque des quais"));
-        network.listLibraries();
-//        network.listDocuments();
 
+        // ------------------------------------------------------------------------------
+        // TESTING TO ADD 2 TIME THE SAME LIBRARY
+        Library newLib = new Library("Médiathèque des quais");
+        network.addLibrary(newLib);
+
+        // Adding the same library a second time
+        network.addLibrary(newLib); /* => triggers Serr("non add car existe") */
+
+        // Adding the same library with a different reference
+        network.addLibrary(new Library("Médiathèque des quais"));
+
+        // Printing library list
+        network.listLibraries();
+        //        network.listDocuments();
+        // ------------------------------------------------------------------------------
+
+
+
+        // ------------------------------------------------------------------------------
+        // TESTING TO ADD 2 TIME THE SAME USER
         User paul = new User("Paul", "Dupont");
         network.addUser(new User("Pierre", "Dupont"), newLib);
+
+
         network.addUser(new User("Pierre", "Dupont"), newLib);
         network.addUser(paul, newLib);
         network.addUser(paul, newLib);     // triggers Serr("non add car existe")
+        // ------------------------------------------------------------------------------
+
+
+
+        // ------------------------------------------------------------------------------
+        // TESTING TO ADD AN USER TO AN UNKNOWN LIBRARY
         network.addUser(new User("test", "test"), new Library("Lib test"));     // triggers Serr("non add car lib inconnue")
+        // ------------------------------------------------------------------------------
+
+
+
+        // ------------------------------------------------------------------------------
+        // TESTING TO ADD REGISTER AN USER A SECOND TIME TO A LIBRARY HE IS ALREADY REGISTERED ON
         
         // triggers Serr("déjà abonné") but should'nt be called here (should be
         // called across the Network) because newLib is here for test purpose
         newLib.registerUser(paul);
-        
+        // ------------------------------------------------------------------------------
+
+
+
+        // ------------------------------------------------------------------------------
+        // TESTING TO ADD TWO TIME THE SAME DOCUMENT
         Document carteAlpes = new Plan("Carte des Alpes", "iueuhfpiuezgfp", "2020", "Office de tourisme des Alpes");
         carteAlpes.setAuthor(new Author("aaaa", "bbb"));
         network.addDocument(carteAlpes);
+
+        network.addDocument(carteAlpes); // triggers Serr()
+        // ------------------------------------------------------------------------------
     }
     
     /**

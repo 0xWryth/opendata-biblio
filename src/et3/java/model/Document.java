@@ -67,4 +67,8 @@ public abstract class Document {
     public void setAuthor(Author docAuthor) {
         this.author = docAuthor;
     }
+
+    public String getEAN() {
+        return EAN;
+    }
 }

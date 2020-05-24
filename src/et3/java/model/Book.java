@@ -13,5 +13,8 @@ public class Book extends Document {
         super(title, EAN, date, publisher);
         this.ISBN = isbn;
     }
-    
+
+    public String getISBN() {
+        return ISBN;
+    }
 }
