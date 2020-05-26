@@ -9,6 +9,9 @@ import et3.java.model.Document;
 import et3.java.model.Library;
 import et3.java.model.Plan;
 import et3.java.model.User;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.*;
 
@@ -19,11 +22,11 @@ import javax.swing.*;
  */
 public class Main
 {
-    public static void main(String[] args)
-    {
-        JFrame f = new Window();
-
-        Network network = null;
+    static Network network = null;
+        
+    static Scanner sc = new Scanner(System.in);
+    
+    public static void main(String[] args) {
         
         if(args.length > 0)
         {
@@ -74,19 +77,20 @@ public class Main
         // ------------------------------------------------------------------------------
         // TESTING TO ADD 2 TIME THE SAME USER
         User paul = new User("Paul", "Dupont");
-        network.addUser(new User("Pierre", "Dupont"), newLib);
+        network.addUser(new User("Pierre", "Dupont"), newLib.getId());
 
 
-        network.addUser(new User("Pierre", "Dupont"), newLib);
-        network.addUser(paul, newLib);
-        network.addUser(paul, newLib);     // triggers Serr("non add car existe")
+        network.addUser(new User("Pierre", "Dupont"), newLib.getId());
+        network.addUser(paul, newLib.getId());
+        network.addUser(paul, newLib.getId());     // triggers Serr("non add car existe")
         // ------------------------------------------------------------------------------
 
 
 
         // ------------------------------------------------------------------------------
         // TESTING TO ADD AN USER TO AN UNKNOWN LIBRARY
-        network.addUser(new User("test", "test"), new Library("Lib test"));     // triggers Serr("non add car lib inconnue")
+        Library unregistredLib = new Library("Lib test");
+        network.addUser(new User("test", "test"), unregistredLib.getId());     // triggers Serr("non add car lib inconnue")
         // ------------------------------------------------------------------------------
 
 
@@ -110,18 +114,237 @@ public class Main
         network.addDocument(carteAlpes); // triggers Serr()
         // ------------------------------------------------------------------------------
 
-        ((Window) f).setLibraryData(network.getLibs());
-        ((Window) f).setDocData(network.getDocs());
-        ((Window) f).setAuthorData(network.getAuthList());
-        ((Window) f).setUserData(network.getUsers());
+
+
+        // ------------------------------------------------------------------------------
+        // TESTING Borrowing
+        //paul.borrowDocument(carteAlpes, newLib);
+        // ------------------------------------------------------------------------------
+
+        
+        // ------------------------------------------------------------------------------
+        // TEST Return document
+        //paul.returnDocument(carteAlpes, newLib);
+        // ------------------------------------------------------------------------------
+
+        
+        handleKeyboard();
+        
+        sc.close();
     }
 
 
     /**
      * Defines actions to do when a key has been pressed.
      */
-    public void handleKeyboard() {
-        // TODO
-        throw new UnsupportedOperationException();
+    private static void handleKeyboard() {
+        boolean exitAsked = false;
+        do {
+            printSeparator();
+            System.out.println("Que souhaitez vous faire ? (entrer la première lettre pour sélectionner l'action)\n");
+
+            System.out.println("[A]jouter");
+            System.out.println("[L]ister");
+            System.out.println("[C]hercher");
+            System.out.println("\n[Q]uitter\n");
+
+            String actionChoice = null;
+            
+            do {
+                actionChoice = sc.nextLine();
+            } while (actionChoice.isEmpty());
+            
+
+            switch (actionChoice.toLowerCase()) {
+                case "a":
+                    // System.out.println("Vous avez choisi : Ajouter");
+                    performAdding();
+                    break;
+                case "l":
+                    // System.out.println("Vous avez choisi : Lister");
+                    performListing();
+                    break;
+                case "c":
+                    // System.out.println("Vous avez choisi : Chercher");
+                    performFinding();
+                    break;
+                case "q":
+                    exitAsked = true;
+                    break;
+                default:
+                    System.err.println("Touche non reconnue !");
+            }
+        } while (!exitAsked);
+        
+        
+        System.out.println("Fin du programme");    
+    }
+
+    private static void performAdding() {
+        printSeparator();
+        System.out.println("Que souhaitez vous ajouter ? (entrer la première lettre pour sélectionner l'action)\n");
+        
+        System.out.println("[B]ibliothèque");
+        System.out.println("[D]ocument");
+        System.out.println("[U]tilisateur");
+        System.out.println("\n[R]etour\n");
+        
+        String addChoice = null;
+        
+        do {
+            addChoice = sc.nextLine();
+        } while (addChoice.isEmpty());
+        
+        switch (addChoice.toLowerCase()) {
+            case "b":
+                System.out.println("Entrez le nom de la bibliothèque à ajouter :");
+                
+                String libName = sc.nextLine();
+
+                Library newLib = new Library(libName);
+                network.addLibrary(newLib);
+                
+                break;
+            case "d":
+                System.out.println("TODO : Ajout d'un Document");
+                
+                // RE-use/mutualise FileReader loader logic ???
+                
+                // Define Type (not null)
+                // Define title (not null)
+                // Define EAN
+                // Define ISBN
+                // Define date
+                // Define publisher
+                // Define author
+                
+                // network.addDoc(newDoc);
+                break;
+            case "u":
+                System.out.println("Entrez le prénom de l'utilisateur à ajouter :");
+                String name = sc.nextLine();
+                
+                System.out.println("Entrez le nom de l'utilisateur à ajouter :");
+                String surname = sc.nextLine();
+                
+                
+                System.out.println("Parmi les bibliothèques ci-dessous, entrez le numéro à laquelle inscrire le nouvel utilisateur :");
+                network.listLibraries();
+                
+                // TODO : what do if NaN ?
+                int libNumber = sc.nextInt();
+                network.addUser(new User(name, surname), libNumber);
+                
+                break;
+            case "r":
+                return;
+            default:
+                System.err.println("Touche non reconnue !");
+        }
+        
+    }
+
+    private static void performListing() {
+        printSeparator();
+        
+        System.out.println("Que souhaitez vous lister ? (entrer la première lettre pour sélectionner l'action)\n");
+        
+        System.out.println("[A]uteurs");
+        System.out.println("[B]ibliothèques");
+        System.out.println("[D]ocuments");
+        System.out.println("[U]tilisateurs");
+        System.out.println("\n[R]etour\n");
+        
+        String listChoice = null;
+        
+        do {
+            listChoice = sc.nextLine();
+        } while (listChoice.isEmpty());
+        
+        JFrame f = new Window();
+        
+        // TODO : Display one tab by one tab or all in one window doesnt matter ?
+        
+        
+        switch (listChoice.toLowerCase()) {
+            case "a":
+                ((Window) f).setAuthorData(network.getAuthList());
+                break;
+            case "b":
+                ((Window) f).setLibraryData(network.getLibs());
+                break;
+            case "d":
+                ((Window) f).setDocData(network.getDocs());
+                break;
+            case "u":
+                ((Window) f).setUserData(network.getUsers());
+                break;
+            case "r":
+                return;
+            default:
+                System.err.println("Touche non reconnue !");
+        }
+        
+        System.out.println("\nFermez la fenêtre \"Consultation\" pour revenir à l'accueil.\n");
+        
+        
+        // Why are 'd' or 'b' or 'u' sometime skipped ?!?
+        // Why in these cases the window isnt active  ?!?
+        // forced to put a    Thread.sleep(100);    to let the window open up...
+    
+        System.out.println("[debug] isActive: " + f.isActive());
+        
+        while (((Window) f).isActive()) { }     // wait window closing
+        
+        f.dispose();
+    }
+
+    private static void performFinding() {
+        printSeparator();
+        
+        System.out.println("Quelle type de recherche souhaitez vous effectuer ? (entrez la lettre entre crochets)\n");
+        
+        System.out.println("[A]uteur (trouver tous les documents d’un même auteur)");
+        System.out.println("[I]SBN \t(trouver un livre par son ISBN)");
+        System.out.println("[E]AN \t(trouver un document par son EAN)");
+        System.out.println("[T]ype \t(nombre de documents d'un type publiés dans un intervalle de temps)");
+        System.out.println("\n[R]etour\n");
+        
+        String searchChoice = null;
+        
+        do {
+            searchChoice = sc.nextLine();
+        } while (searchChoice.isEmpty());
+        
+        
+        // TODO : use JFrame if more than XX results ??
+        
+        
+        switch (searchChoice.toLowerCase()) {
+            case "a":
+                // TODO : perform research by author (by name, surmane or both)
+                break;
+            case "i":
+                // TODO : perform research
+                break;
+            case "e":
+                // TODO : perform research
+                break;
+            case "t":
+                // TODO : perform research
+                break;
+            case "r":
+                return;
+            default:
+                System.err.println("Touche non reconnue !");
+        }
+    }
+
+    
+    /**
+     * Displays a '=' line for a more readable CLI.
+     */
+    private static void printSeparator() {
+        System.out.println("\n=======================================================================================");
     }
 }

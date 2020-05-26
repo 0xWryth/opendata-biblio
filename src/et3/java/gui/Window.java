@@ -29,8 +29,10 @@ public class Window extends JFrame {
     TabbedArray userTab =  new TabbedArray(userHeader);
 
     public Window() {
-        super("App");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        super("Consultation");
+        
+        // do not close app on consultation window close
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         mainPanel.setLayout(new BorderLayout());
 
@@ -44,6 +46,7 @@ public class Window extends JFrame {
         setContentPane(mainPanel);
 
         setVisible(true);
+        setAlwaysOnTop(true);
     }
 
     public void setLibraryData(HashMap<Integer, Library> hm) {
@@ -75,11 +78,11 @@ public class Window extends JFrame {
     }
 
     public void setAuthorData(HashMap<Integer, Author> hm) {
-        DefaultTableModel m = userTab.getModel();
+        DefaultTableModel m = authorTab.getModel();
         hm.forEach((i, auth) -> {
             Object[] toAdd = {auth.getId(), auth.getName(), auth.getSurname()};
             m.addRow(toAdd);
         });
-        userTab.setModel(m);
+        authorTab.setModel(m);
     }
 }

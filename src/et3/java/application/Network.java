@@ -48,7 +48,7 @@ public class Network {
                 ))
                 .findFirst()
                 .orElseThrow(Exception::new);
-            System.err.println("Le document " + skip.toString() + " n'a pas été ajouté car il existe déjà.");
+            System.err.println("Le document " + doc.toString() + " n'a pas été ajouté car il existe déjà.");
         } catch (Exception e) {
             // If an exception is thrown, then no duplicate doc has been found
             this.docs.add(doc);
@@ -75,10 +75,13 @@ public class Network {
         
         if (existingLib != null) {
             System.err.println("La " + lib.toString() + " n'a pas été ajoutée car elle existe déjà.");
+        } else {
+            System.out.println("La librairie " + lib.getName() + " a été ajoutée avec succès !");
         }
     }
     
 
+    
     public void listLibraries() {
 //        for (TypeKey name: example.keySet()){
 //            String key = name.toString();
@@ -96,6 +99,8 @@ public class Network {
             System.out.println(doc);
         }
     }
+    
+    
     
     /*
         addUser()..
@@ -142,18 +147,21 @@ public class Network {
     /**
      *
      * @param user
-     * @param lib
+     * @param libId
      */
-    public void addUser(User user, Library lib) {
-        if (this.libs.containsKey(lib.getId())) {
+    public void addUser(User user, int libId) {
+        Library lib = this.libs.get(libId);
+        
+        if (lib != null) {
             User existingUser = this.users.putIfAbsent(user.getId(), user);
         
             if (existingUser != null) {
-                System.err.println("L'utilisateur " + user.getName() + " " + user.getSurname() + " n'a pas été ajoutée car il semble déjà exister dans le réseau.");
+                System.err.println("L'utilisateur " + user.toString() + " n'a pas été ajoutée car il semble déjà exister dans le réseau.");
                 return;
             }
-
+            
             lib.registerUser(user);
+            System.out.println("L'utilisateur " + user.toString() + " a bien été créé et inscrit à la librairie " + lib.getName());
         } else {
             // Add the unknown library on the fly ??
             System.err.println("La bibliothèque associée ne fait pas partie du réseau.");
