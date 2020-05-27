@@ -3,6 +3,7 @@ package et3.java.application;
 import et3.java.model.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 /**
  * Network class represents all the objects known in the system. The user
@@ -27,6 +28,10 @@ public class Network {
         this.users = new HashMap<>();
     }
 
+    /**
+     * Add document in the network if it doesnt already exists.
+     * @param doc 
+     */
     public void addDocument(Document doc) {
         try {
             // We got different case
@@ -101,24 +106,24 @@ public class Network {
     }
     
     
-    
-    /*
-        addUser()..
-    */
-
     /**
      * Return the corresponding Series or a new Series if not found in network.
      * @param seriesTitle
      * @return 
      */
     public Series getSeries(String seriesTitle) {
-        /* TODO : search in list + add in seriesList */
+        Series existingSeries = null;
         
-        Series existingSeries = null;  // = seriesList.search(seriesTitle);
+        for(Entry<Integer, Series> entry : this.seriesList.entrySet()) {
+            if (entry.getValue().getTitle().equals(seriesTitle)) {
+                existingSeries = entry.getValue();
+                break;
+            }
+        }
         
         if (existingSeries == null) {
             existingSeries = new Series(seriesTitle);
-            // add it to seriesList
+            this.seriesList.put(existingSeries.getId(), existingSeries);
         }
         
         return existingSeries;

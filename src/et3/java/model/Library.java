@@ -22,9 +22,17 @@ public class Library {
         this.registredUsers = new ArrayList<>();
     }
     
-    public void addDoc(Document doc, int numberOfDoc) {
-        // TODO : check if it already exists before adding (just add +1 in "quantity")
-        this.documents.put(doc, numberOfDoc);
+    /**
+     * Add document in the library. If it already exists, update quantity.
+     * @param doc
+     * @param numberOfDoc 
+     */
+    public void addDoc(Document doc, int numberOfDoc) {        
+        if (this.documents.containsKey(doc)) {
+            this.documents.put(doc, numberOfDoc + this.documents.get(doc));
+        } else {
+            this.documents.put(doc, numberOfDoc);
+        }
     }
     
     /**

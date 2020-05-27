@@ -114,19 +114,6 @@ public class Main
         network.addDocument(carteAlpes); // triggers Serr()
         // ------------------------------------------------------------------------------
 
-
-
-        // ------------------------------------------------------------------------------
-        // TESTING Borrowing
-        //paul.borrowDocument(carteAlpes, newLib);
-        // ------------------------------------------------------------------------------
-
-        
-        // ------------------------------------------------------------------------------
-        // TEST Return document
-        //paul.returnDocument(carteAlpes, newLib);
-        // ------------------------------------------------------------------------------
-
         
         handleKeyboard();
         
@@ -146,6 +133,7 @@ public class Main
             System.out.println("[A]jouter");
             System.out.println("[L]ister");
             System.out.println("[C]hercher");
+            System.out.println("[E]mprunter / Retourner");
             System.out.println("\n[Q]uitter\n");
 
             String actionChoice = null;
@@ -157,16 +145,16 @@ public class Main
 
             switch (actionChoice.toLowerCase()) {
                 case "a":
-                    // System.out.println("Vous avez choisi : Ajouter");
                     performAdding();
                     break;
                 case "l":
-                    // System.out.println("Vous avez choisi : Lister");
                     performListing();
                     break;
                 case "c":
-                    // System.out.println("Vous avez choisi : Chercher");
                     performFinding();
+                    break;
+                case "e":
+                    performBorrowing();
                     break;
                 case "q":
                     exitAsked = true;
@@ -212,13 +200,13 @@ public class Main
                 
                 // Define Type (not null)
                 // Define title (not null)
-                // Define EAN
-                // Define ISBN
+                // Define EAN   -> add check if already exists
+                // Define ISBN  -> add check if already exists
                 // Define date
                 // Define publisher
                 // Define author
                 
-                // network.addDoc(newDoc);
+//                network.addDocument(doc);
                 break;
             case "u":
                 System.out.println("Entrez le prénom de l'utilisateur à ajouter :");
@@ -228,7 +216,8 @@ public class Main
                 String surname = sc.nextLine();
                 
                 
-                System.out.println("Parmi les bibliothèques ci-dessous, entrez le numéro à laquelle inscrire le nouvel utilisateur :");
+                System.out.println("Parmi les bibliothèques ci-dessous, entrez le "
+                        + "numéro à laquelle inscrire le nouvel utilisateur :");
                 network.listLibraries();
                 
                 // TODO : what do if NaN ?
@@ -302,7 +291,7 @@ public class Main
     private static void performFinding() {
         printSeparator();
         
-        System.out.println("Quelle type de recherche souhaitez vous effectuer ? (entrez la lettre entre crochets)\n");
+        System.out.println("Quel type de recherche souhaitez vous effectuer ? (entrez la lettre entre crochets)\n");
         
         System.out.println("[A]uteur (trouver tous les documents d’un même auteur)");
         System.out.println("[I]SBN \t(trouver un livre par son ISBN)");
@@ -334,6 +323,77 @@ public class Main
                 // TODO : perform research
                 break;
             case "r":
+                return;
+            default:
+                System.err.println("Touche non reconnue !");
+        }
+    }
+
+
+    private static void performBorrowing() {
+        printSeparator();
+        
+        System.out.println("Action emprunt/retour ? (entrez la lettre entre crochets)\n");
+        
+        System.out.println("[E]mprunt utilisateur");
+        System.out.println("[R]etour utilisateur");
+        System.out.println("[T]ransférer des documents entre bibliothèques");
+        System.out.println("\n[A]nnuler\n");
+        
+        String exchangeChoice = null;
+        
+        do {
+            exchangeChoice = sc.nextLine();
+        } while (exchangeChoice.isEmpty());
+        
+        
+        switch (exchangeChoice.toLowerCase()) {
+            case "e":
+                System.out.println("Prénom de l'utilisateur qui souhaite emprunter :");
+                String name = sc.nextLine();
+                
+                System.out.println("Nom de l'utilisateur qui souhaite emprunter :");
+                String surname = sc.nextLine();
+                
+                
+                System.out.println("Parmi les bibliothèques ci-dessous, ... :");
+                network.listLibraries();
+                
+                // user = getUser("user")
+                // Borrow document
+                // user.borrowDocument(carteAlpes, newLib);
+                break;
+            case "r":
+                // TODO
+                
+                // user = getUser("user")
+                // Return document
+                // user.returnDocument(carteAlpes, newLib);
+                break;
+            case "t":
+                // TODO
+                
+                System.out.println("Bibliothèque d'origine ? ... :");
+                network.listLibraries();
+                
+                // TODO : what do if NaN ?
+                int lib1 = sc.nextInt();
+                
+                System.out.println("Bibliothèque destinataire ? ... :");
+                network.listLibraries();
+                
+                // TODO : what do if NaN ?
+                int lib2 = sc.nextInt();
+                
+                System.out.println("EAN du document à transférer ? ... :");
+                String docEAN = sc.nextLine();
+                
+                // Doc doc = getDocByEAN(docEAN);
+                
+                // if (doc != null && lib1.hasDoc())
+                //    lib1.exchangeDocument(Library lib2)
+                break;
+            case "a":
                 return;
             default:
                 System.err.println("Touche non reconnue !");

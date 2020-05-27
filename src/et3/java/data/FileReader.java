@@ -21,216 +21,21 @@ public class FileReader
     /**
      *
      * @param csvFilePath
-     * @author EugenieBrasier
-     */
-    public static void getDataFromCSVFile(String csvFilePath)
-    {
-        String line = "";
-        String[] data = null;
-        String separator = ";(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
-        
-        //Document data
-        String isbn;
-        String ean;
-        String title;
-        String publisher;
-        String date;
-        String seriesTitle;
-        Integer seriesNumber;
-        String authorName;
-        String authorSurname;
-        String type;
-        int totalCopies;
-        int numberCopyAimeCesaire;
-        int numberCopyEdmondRostand;
-        int numberCopyJeanPierreMelville;
-        int numberCopyOscarWilde;
-        int numberCopySaintSimon;
-        
-        try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(csvFilePath), StandardCharsets.ISO_8859_1))
-        {
-            //Read the first line
-            line = bufferedReader.readLine();
-            
-            //Get data from the line
-            data = line.split(separator, -1);
-            
-            if(data.length != 16)
-            {
-                System.out.println("[FileReader] The file at " + csvFilePath + " does not contain the right number of columns.");
-                return;
-            }
-            
-            int i = 1;
-            
-            //Read the file line by line
-            while ((line = bufferedReader.readLine()) != null)
-            {
-                //Get data from the line
-                data = line.split(separator, -1);
-                
-                //Sort data
-                
-                //Get the ISBN number
-                isbn = data[0];
-                
-                //Get the EAN number
-                ean = data[1];
-                
-                //Get the title of the document
-                title = data[2];
-                
-                //Get the name of the publisher
-                publisher = data[3];
-                
-                //Get the publication date
-                try
-                {
-                    int dateInt = Integer.parseInt(data[4].replaceAll("[^0-9]", ""));
-                    
-                    if(dateInt%10000 >= 2021 || dateInt%10000 < 0)
-                    {
-                        date = "?";
-                    }
-                    else if(dateInt/10000 == 0)
-                    {
-                        date = Integer.toString(dateInt%10000);
-                    }
-                    else
-                    {
-                        date = dateInt%10000 + "-" + dateInt/10000;
-                    }
-                }
-                catch (Exception exception)
-                {
-                    date = "?";
-                }
-                
-                //Get the title of the series
-                seriesTitle = data[5];
-                
-                //Get the number of this document in the series
-                try
-                {
-                    seriesNumber = Integer.parseInt(data[6]);
-                }
-                catch (Exception exception)
-                {
-                    seriesNumber = null;
-                }
-                
-                //Get the name of the author
-                authorSurname = data[7];
-                
-                //Get the surname of the author
-                authorName = data[8];
-                
-                //Get the type of the document
-                type = data[9];
-                
-                //Get the total number of copy in Paris for this document
-                try
-                {
-                    totalCopies = Integer.parseInt(data[10]);
-                }
-                catch (Exception exception)
-                {
-                    totalCopies = 0;
-                }
-                
-                //Get the number of copy in the library "Aime Cesaire"
-                try
-                {
-                    numberCopyAimeCesaire = Integer.parseInt(data[11]);
-                }
-                catch (Exception exception)
-                {
-                    numberCopyAimeCesaire = 0;
-                }
-                
-                //Get the number of copy in the library "Edmond Rostand"
-                try
-                {
-                    numberCopyEdmondRostand = Integer.parseInt(data[12]);
-                }
-                catch (Exception exception)
-                {
-                    numberCopyEdmondRostand = 0;
-                }
-                
-                //Get the number of copy in the library "Jean-Pierre Melville"
-                try
-                {
-                    numberCopyJeanPierreMelville = Integer.parseInt(data[13]);
-                }
-                catch (Exception exception)
-                {
-                    numberCopyJeanPierreMelville = 0;
-                }
-                
-                //Get the number of copy in the library "Oscar Wilde"
-                try
-                {
-                    numberCopyOscarWilde = Integer.parseInt(data[14]);
-                }
-                catch (Exception exception)
-                {
-                    numberCopyOscarWilde = 0;
-                }
-                
-                //Get the number of copy in the library "Saint-Simon"
-                try
-                {
-                    numberCopySaintSimon = Integer.parseInt(data[15]);
-                }
-                catch (Exception exception)
-                {
-                    numberCopySaintSimon = 0;
-                }
-                
-                //TODO Do something with data
-                
-                System.out.println( isbn + ";" +
-                        ean + ";" +
-                        title + ";" +
-                        publisher + ";" +
-                        date + ";" +
-                        seriesTitle + ";" +
-                        seriesNumber + ";" +
-                        authorName + ";" +
-                        authorSurname + ";" +
-                        type + ";" +
-                        totalCopies + ";" +
-                        numberCopyAimeCesaire + ";" +
-                        numberCopyEdmondRostand + ";" +
-                        numberCopyJeanPierreMelville + ";" +
-                        numberCopyOscarWilde + ";" +
-                        numberCopySaintSimon);
-            }
-        }
-        catch (IOException exception)
-        {
-            System.err.println(exception);
-        }
-    }
-    
-    /**
-     *
-     * @param csvFilePath
      * @return A filled Network object
+     * @author EugenieBrasier, adepreis
      */
     public static Network loadDataFromCSVFile(String csvFilePath)
     {
-        Library libAimeCesaire = new Library("Aime Cesaire");
-        Library libEdmondRostand = new Library("Edmond Rostand");
+        Library libAimeCesaire      = new Library("Aime Cesaire");
+        Library libEdmondRostand    = new Library("Edmond Rostand");
         Library libJeanPierreMelville = new Library("Jean Pierre Melville");
-        Library libOscarWilde = new Library("Oscar Wilde");
-        Library libSaintSimon = new Library("Saint Simon");
+        Library libOscarWilde       = new Library("Oscar Wilde");
+        Library libSaintSimon       = new Library("Saint Simon");
         
         Network network = new Network();
         
-        String line = "";
-        String[] data = null;
+        String line     = "";
+        String[] data   = null;
         String separator = ";(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
         
         //Document data
@@ -400,9 +205,7 @@ public class FileReader
                     numberCopySaintSimon = 0;
                 }
                 
-                
-                //TODO Do something with data
-                
+                                
                 switch(type) {
                     case "Partition" :
                         newDoc = new SheetMusic(title, ean, date, publisher);
@@ -474,25 +277,22 @@ public class FileReader
                 
                 
                 // TODO :
-                // newDoc.setTotalCopies() ????
+                // newDoc.setTotalCopies(); // useful ????
                 
                 
-                
-                // if (noSameDoc in Network)
-                    network.addDocument(newDoc);
-                // else
-                //    ?
+                network.addDocument(newDoc);
                 
                 if (!seriesTitle.equals("")) {
+                    // use seriesNumber ???
                     Series docSerie = network.getSeries(seriesTitle);
                     docSerie.addDoc(newDoc);
                 }
                 
-                libAimeCesaire.addDoc(newDoc, numberCopyAimeCesaire);
-                libEdmondRostand.addDoc(newDoc, numberCopyEdmondRostand);
-                libJeanPierreMelville.addDoc(newDoc, numberCopyJeanPierreMelville);
-                libOscarWilde.addDoc(newDoc, numberCopyOscarWilde);
-                libSaintSimon.addDoc(newDoc, numberCopySaintSimon);
+                if (numberCopyAimeCesaire > 0)          libAimeCesaire.addDoc(newDoc, numberCopyAimeCesaire);
+                if (numberCopyEdmondRostand > 0)        libEdmondRostand.addDoc(newDoc, numberCopyEdmondRostand);
+                if (numberCopyJeanPierreMelville > 0)   libJeanPierreMelville.addDoc(newDoc, numberCopyJeanPierreMelville);
+                if (numberCopyOscarWilde > 0)           libOscarWilde.addDoc(newDoc, numberCopyOscarWilde);
+                if (numberCopySaintSimon > 0)           libSaintSimon.addDoc(newDoc, numberCopySaintSimon);
             }
         }
         catch (IOException exception)
