@@ -57,11 +57,11 @@ public class Network {
         }
     }
 
-    public List<Entry<Integer, Author>> searchAuthor(String author) {
+    public Set<Entry<Integer, Author>> searchAuthor(String author) {
         return this.authList.entrySet().stream().filter(auth -> (
             auth.getValue().getName().contains(author) ||
             auth.getValue().getSurname().contains(author)
-        )).collect(Collectors.toList());
+        )).collect(Collectors.toSet());
     }
 
     public List<Document> searchISBN(String ISBN) {

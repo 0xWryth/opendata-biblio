@@ -145,6 +145,7 @@ public class Main
             System.out.println("[A]jouter");
             System.out.println("[L]ister");
             System.out.println("[C]hercher");
+            System.out.println("[O]uverte de l'interface graphique");
             System.out.println("\n[Q]uitter\n");
 
             String actionChoice = null;
@@ -166,6 +167,9 @@ public class Main
                 case "c":
                     // System.out.println("Vous avez choisi : Chercher");
                     performFinding();
+                    break;
+                case "o":
+                    f.setVisible(true);
                     break;
                 case "q":
                     exitAsked = true;
@@ -307,17 +311,20 @@ public class Main
             case "a":
                 System.out.println("Entrez le nom/surnom de l'auteur à rechercher :");
                 String author = sc.nextLine();
-                System.out.println(network.searchAuthor(author));
+
+                ((Window) f).setResearchData("authors", author, network.searchAuthor(author));
                 break;
             case "i":
                 System.out.println("Entrez l'ISBN du livre à rechercher :");
                 String ISBN = sc.nextLine();
-                System.out.println(network.searchISBN(ISBN));
+
+                ((Window) f).setResearchData("ISBN", ISBN, network.searchISBN(ISBN));
                 break;
             case "e":
                 System.out.println("Entrez l'EAN du document à rechercher :");
                 String EAN = sc.nextLine();
-                System.out.println(network.searchEAN(EAN));
+
+                ((Window) f).setResearchData("EAN", EAN, network.searchEAN(EAN));
                 break;
             case "t":
                 printSeparator();
@@ -373,7 +380,9 @@ public class Main
                     strEnding = sc.nextLine();
                 } while (strEnding.length() != 4);
 
-                System.out.println(network.searchDocumentsByTypeAndDate(type, strBegining, strBegining));
+
+                String strSearch = "[" + strBegining + "-" + strEnding + "] " + type;
+                ((Window) f).setResearchData("DATE", strSearch, network.searchDocumentsByTypeAndDate(type, strBegining, strBegining));
 
                 break;
             case "r":
