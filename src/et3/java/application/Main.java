@@ -4,11 +4,8 @@ import java.io.File;
 
 import et3.java.data.FileReader;
 import et3.java.gui.Window;
-import et3.java.model.Author;
-import et3.java.model.Document;
-import et3.java.model.Library;
-import et3.java.model.Plan;
-import et3.java.model.User;
+import et3.java.model.*;
+
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,6 +22,8 @@ public class Main
     static Network network = null;
         
     static Scanner sc = new Scanner(System.in);
+
+    static Window f = new Window();
     
     public static void main(String[] args) {
         
@@ -261,8 +260,6 @@ public class Main
             listChoice = sc.nextLine();
         } while (listChoice.isEmpty());
         
-        JFrame f = new Window();
-        
         // TODO : Display one tab by one tab or all in one window doesnt matter ?
         
         
@@ -285,24 +282,14 @@ public class Main
                 System.err.println("Touche non reconnue !");
         }
         
-        System.out.println("\nFermez la fenêtre \"Consultation\" pour revenir à l'accueil.\n");
-        
-        
         // Why are 'd' or 'b' or 'u' sometime skipped ?!?
         // Why in these cases the window isnt active  ?!?
-        // forced to put a    Thread.sleep(100);    to let the window open up...
-    
-        System.out.println("[debug] isActive: " + f.isActive());
-        
-        while (((Window) f).isActive()) { }     // wait window closing
-        
-        f.dispose();
     }
 
     private static void performFinding() {
         printSeparator();
         
-        System.out.println("Quelle type de recherche souhaitez vous effectuer ? (entrez la lettre entre crochets)\n");
+        System.out.println("Quel type de recherche souhaitez vous effectuer ? (entrez la lettre entre crochets)\n");
         
         System.out.println("[A]uteur (trouver tous les documents d’un même auteur)");
         System.out.println("[I]SBN \t(trouver un livre par son ISBN)");
@@ -316,22 +303,78 @@ public class Main
             searchChoice = sc.nextLine();
         } while (searchChoice.isEmpty());
         
-        
-        // TODO : use JFrame if more than XX results ??
-        
-        
         switch (searchChoice.toLowerCase()) {
             case "a":
-                // TODO : perform research by author (by name, surmane or both)
+                System.out.println("Entrez le nom/surnom de l'auteur à rechercher :");
+                String author = sc.nextLine();
+                System.out.println(network.searchAuthor(author));
                 break;
             case "i":
-                // TODO : perform research
+                System.out.println("Entrez l'ISBN du livre à rechercher :");
+                String ISBN = sc.nextLine();
+                System.out.println(network.searchISBN(ISBN));
                 break;
             case "e":
-                // TODO : perform research
+                System.out.println("Entrez l'EAN du document à rechercher :");
+                String EAN = sc.nextLine();
+                System.out.println(network.searchEAN(EAN));
                 break;
             case "t":
-                // TODO : perform research
+                printSeparator();
+
+                System.out.println("Choix du type de documents ? (entrez la lettre entre crochets)\n");
+
+                System.out.println("[C]omic");
+                System.out.println("[B]ook");
+                System.out.println("C[D]");
+                System.out.println("[V]ynil");
+                System.out.println("[G]ame");
+                System.out.println("Bo[A]rd game");
+                System.out.println("[P]lan");
+                System.out.println("Revie[W]");
+                System.out.println("[S]heet Music");
+                System.out.println("[O]ther");
+                System.out.println("\n[R]etour\n");
+
+                String docTypeChoice = null;
+
+                do {
+                    docTypeChoice = sc.nextLine();
+                } while (docTypeChoice.isEmpty());
+
+                String type = "";
+                switch (docTypeChoice.toLowerCase()) {
+                    case "c": type = "Comic"; break;
+                    case "b": type = "Book"; break;
+                    case "d": type = "CD"; break;
+                    case "v": type = "VinylDisc"; break;
+                    case "g": type = "VideoGame"; break;
+                    case "a": type = "BoardGame"; break;
+                    case "p": type = "Plan"; break;
+                    case "w": type = "Review"; break;
+                    case "s": type = "SheetMusic"; break;
+                    case "o": type = "Other"; break;
+                    case "r": return;
+                    default:
+                        System.err.println("Touche non reconnue !");
+                }
+
+                printSeparator();
+
+                System.out.println("Saisissez l'année de début de recherche : (sour le format yyyy)\n");
+                String strBegining = "";
+                do {
+                    strBegining = sc.nextLine();
+                } while (strBegining.length() != 4);
+
+                System.out.println("Saisissez l'année de fin de recherche : (sour le format yyyy)\n");
+                String strEnding = "";
+                do {
+                    strEnding = sc.nextLine();
+                } while (strEnding.length() != 4);
+
+                System.out.println(network.searchDocumentsByTypeAndDate(type, strBegining, strBegining));
+
                 break;
             case "r":
                 return;

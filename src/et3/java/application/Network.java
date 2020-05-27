@@ -1,8 +1,10 @@
 package et3.java.application;
 
 import et3.java.model.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * Network class represents all the objects known in the system. The user
@@ -53,6 +55,48 @@ public class Network {
             // If an exception is thrown, then no duplicate doc has been found
             this.docs.add(doc);
         }
+    }
+
+    public List<Entry<Integer, Author>> searchAuthor(String author) {
+        return this.authList.entrySet().stream().filter(auth -> (
+            auth.getValue().getName().contains(author) ||
+            auth.getValue().getSurname().contains(author)
+        )).collect(Collectors.toList());
+    }
+
+    public List<Document> searchISBN(String ISBN) {
+        return searchISBN(ISBN, false);
+    }
+
+    public List<Document> searchISBN(String ISBN, boolean mustMatch) {
+        return this.docs.stream().filter(doc -> (
+            doc instanceof Book && (
+            (mustMatch && ((Book) doc).getISBN().equals(ISBN)) ||
+            (!mustMatch && ((Book) doc).getISBN().contains(ISBN)))
+        )).collect(Collectors.toList());
+    }
+
+    public List<Document> searchEAN(String EAN) {
+        return searchEAN(EAN, false);
+    }
+
+    public List<Document> searchEAN(String EAN, boolean mustMatch) {
+        return this.docs.stream().filter(doc -> (
+            (mustMatch && doc.getEAN().equals(EAN)) ||
+            (!mustMatch && doc.getEAN().contains(EAN))
+        )).collect(Collectors.toList());
+    }
+
+    public List<Document> searchDocumentsByTypeAndDate(String type, String strBegining, String strEnding) {
+        int begining = Integer.parseInt(strBegining);
+        int ending = Integer.parseInt(strEnding);
+
+        return this.docs.stream().filter(doc -> (
+            doc.getClass().getSimpleName().equals(type) &&
+            !doc.getDate().equals("?") &&
+            Integer.parseInt(doc.getDate().substring(0, Math.min(4, doc.getDate().length()))) >= begining &&
+            Integer.parseInt(doc.getDate().substring(0, Math.min(4, doc.getDate().length()))) <= ending
+        )).collect(Collectors.toList());
     }
 
     public void addAuthor(Author auth) {
