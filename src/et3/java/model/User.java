@@ -1,5 +1,6 @@
 package et3.java.model;
 
+import et3.java.exceptions.*;
 import java.util.*;
 
 /**
@@ -9,7 +10,7 @@ import java.util.*;
 public class User extends Person {
     private static int nextId = 1;
     private final int id;
-    private HashMap<Integer, Integer> registredLib;     // first int : lib id, second : quota allowed
+    private HashMap<Integer, LibraryAccount> registredLib;     // first int : lib id
 
     public User(String name, String surname) {
         super(name, surname);
@@ -19,12 +20,19 @@ public class User extends Person {
     
     /**
      *
-     * @param d
-     * @param l
+     * @param doc
+     * @param lib
+     * @throws et3.java.exceptions.UnregisteredUser
+     * @throws et3.java.exceptions.DocumentQuotaReached
      */
-    public void borrowDocument(Document d, Library l) {
-        // TODO - implement User.borrowDocument
-        throw new UnsupportedOperationException();
+    public void borrowDocument(Document doc, Library lib) throws DocumentBorrowingException {
+        LibraryAccount account = this.registredLib.get(lib.getId());
+        
+        if (account == null){
+            throw new UnregisteredUser();
+        }
+
+        account.addBorrowedDocument(doc);
     }
     
     /**
@@ -43,7 +51,7 @@ public class User extends Person {
      * @param quota
      */
     public void subscribe(Library lib, int quota) {
-        this.registredLib.put(lib.getId(), quota);
+        this.registredLib.put(lib.getId(), new LibraryAccount(quota));
     }
     
     /**

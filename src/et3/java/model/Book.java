@@ -17,4 +17,9 @@ public class Book extends Document {
     public String getISBN() {
         return ISBN;
     }
+    
+    @Override
+    public String toString() {
+        return super.toString() + ", ISBN=" + ISBN;
+    }
 }

@@ -1,7 +1,7 @@
 package et3.java.application;
 
+import et3.java.exceptions.*;
 import et3.java.model.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -14,7 +14,7 @@ import java.util.Map.Entry;
  */
 public class Network {
     private HashMap<Integer, Library> libs;
-    private ArrayList<Document> docs;
+    private HashMap<String, Document> docs;
     private HashMap<Integer, Author> authList;
     private HashMap<Integer, Series> seriesList;
     private HashMap<Integer, User> users;
@@ -22,7 +22,7 @@ public class Network {
 
     public Network() {
         this.libs = new HashMap<>();
-        this.docs = new ArrayList<>();
+        this.docs = new HashMap<>();
         this.authList = new HashMap<>();
         this.seriesList = new HashMap<>();
         this.users = new HashMap<>();
@@ -31,32 +31,38 @@ public class Network {
     /**
      * Add document in the network if it doesnt already exists.
      * @param doc 
+     * @throws et3.java.exceptions.EANAlreadyExists 
+     * @throws et3.java.exceptions.ISBNAlreadyExists 
      */
-    public void addDocument(Document doc) {
-        try {
-            // We got different case
-            // Case 1: doc is not a Book
-            //      => If 2 EAN are the same => skip
-            // Case 2: doc is Book
-            //      Case 2.a: ISBN is empty
-            //          => If 2 EAN are the same => skip
-            //      Case 2.b: ISBN is not empty
-            //          => If 2 ISBN are the same => skip
-
-            Document skip = this.docs.stream()
-                .filter(d -> (
-                        (d instanceof Book && doc instanceof Book &&
-                            ((Book) doc).getISBN().length() != 0 &&
-                            ((Book) doc).getISBN().equals(((Book) d).getISBN())) || (
-                                    d.getEAN().equals(doc.getEAN())
-                                )
-                ))
-                .findFirst()
-                .orElseThrow(Exception::new);
-            System.err.println("Le document " + doc.toString() + " n'a pas été ajouté car il existe déjà.");
-        } catch (Exception e) {
-            // If an exception is thrown, then no duplicate doc has been found
-            this.docs.add(doc);
+    public void addDocument(Document doc) throws EANAlreadyExists, ISBNAlreadyExists {
+        String key = doc.getEAN() + (doc instanceof Book ? ((Book) doc).getISBN() : "");
+        
+        Document existingDoc = this.docs.putIfAbsent(key, doc);
+        
+        /* TODO : handle empty EAN or ISBN empty ?? */
+        
+        // We got different case
+        // Case 1: doc is not a Book
+        //      => If 2 EAN are the same => skip
+        // Case 2: doc is Book
+        //      Case 2.a: ISBN is empty
+        //          => If 2 EAN are the same => skip
+        //      Case 2.b: ISBN is not empty
+        //          => If 2 ISBN are the same => skip
+        
+        
+        if (existingDoc != null) {
+            if (existingDoc.getEAN().equals(doc.getEAN())) {
+                throw new EANAlreadyExists("Le document " + doc.toString() + " n'a pas été ajouté au réseau car son EAN existe déjà.");
+            }
+            if (doc instanceof Book && doc instanceof Book &&
+                ((Book) existingDoc).getISBN().equals(((Book) doc).getISBN())
+               ) {
+                throw new ISBNAlreadyExists("Le document " + doc.toString() + " n'a pas été ajouté au réseau car son ISBN existe déjà.");
+            }
+            System.err.println("Le document " + doc.toString() + " n'a pas été ajouté au réseau pour une raison inconnue...");
+        } else {
+            System.out.println("Le document " + doc.toString() + " a bien été ajouté !");
         }
     }
 
@@ -98,12 +104,6 @@ public class Network {
             System.out.println(entry.getValue());  
          });
     }
-
-    public void listDocuments() {
-        for (Document doc : this.docs) {
-            System.out.println(doc);
-        }
-    }
     
     
     /**
@@ -135,11 +135,17 @@ public class Network {
      * @param authorSurname
      * @return 
      */
-    public Author getAuthor(String authorName, String authorSurname) {
-        /* TODO : One field can be empty at most */
-        /* TODO : search in list */
+    public Author getAuthor(String authorName, String authorSurname) {        
+        Author existingAuthor = null;
         
-        Author existingAuthor = null;  // = authList.search(authorName, authorSurname);
+        for(Entry<Integer, Author> entry : this.authList.entrySet()) {
+            if (entry.getValue().getName().equals(authorName)) {
+                if (entry.getValue().getSurname().equals(authorSurname)) {
+                    existingAuthor = entry.getValue();
+                    break;
+                }
+            }
+        }
         
         if (existingAuthor == null) {
             existingAuthor = new Author(authorName, authorSurname);
@@ -172,8 +178,47 @@ public class Network {
             System.err.println("La bibliothèque associée ne fait pas partie du réseau.");
         }
     }
+    
+    /**
+     *
+     * @param userId
+     * @param docId
+     * @param libId
+     * @throws et3.java.exceptions.DocumentBorrowingException
+     */
+    public void registerBorrowing(int userId, String docId, int libId) throws DocumentBorrowingException {
+        User user;
+        if ((user = this.users.get(userId)) == null) {
+            // TODO :
+            // throw new Exception();
+            System.err.println("Cet utilisateur n'existe pas");
+            return;
+        }
+        
+        Document doc;
+        if ((doc = this.docs.get(docId)) == null) {
+            // TODO :
+            // throw new Exception();
+            System.err.println("Ce document n'existe pas");
+            return;
+        }
+        
+        Library lib;
+        if ((lib = this.libs.get(libId)) == null) {
+            // TODO :
+            // throw new Exception();
+            System.err.println("Cette bibliothèque n'existe pas");
+            return;
+        }
+        
+//        if (docNotInLib){
+//            throw new DocumentNotAvailable();
+//        }
+        
+        user.borrowDocument(doc, lib);
+    }
 
-    public ArrayList<Document> getDocs() {
+    public HashMap<String, Document> getDocs() {
         return docs;
     }
 

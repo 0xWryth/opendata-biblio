@@ -64,6 +64,22 @@ public class Library {
     }
     
     /**
+     *
+     * @param doc
+     */
+    public void removeDocument(Document doc) {
+        if (this.documents.containsKey(doc)) {
+            if (this.documents.get(doc) == 1) {
+                this.documents.remove(doc);
+            } else {
+                this.documents.put(doc, this.documents.get(doc) - 1);
+            }
+        } else {
+            System.err.println("Impossible de retirer ce document de la bibliothèque car il n'y est pas.");
+        }
+    }
+    
+    /**
      * 
      * @param lib
      */

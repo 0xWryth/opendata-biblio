@@ -1,6 +1,8 @@
 package et3.java.data;
 
 import et3.java.application.Network;
+import et3.java.exceptions.EANAlreadyExists;
+import et3.java.exceptions.ISBNAlreadyExists;
 import et3.java.model.*;
 
 import java.io.BufferedReader;
@@ -10,6 +12,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * FileReader is an utility class used to parse a .csv into a Network wich can
@@ -206,67 +210,7 @@ public class FileReader
                 }
                 
                                 
-                switch(type) {
-                    case "Partition" :
-                        newDoc = new SheetMusic(title, ean, date, publisher);
-                        break;
-                    case "Revue de Fonds specialises" :
-                    case "Revue pour adulte" :
-                    case "Revue jeunesse" :
-                        newDoc = new Review(title, ean, date, publisher);
-                        break;
-                    case "Carte ou plan" :
-                        newDoc = new Plan(title, ean, date, publisher);
-                        break;
-                    case "DVD-video tous publics" :
-                    case "DVD- video > 18 ans" :
-                    case "DVD- video > 12 ans" :
-                    case "DVD-video > 16 ans" :
-                    case "DVD jeunesse" :
-                        newDoc = new DVD(title, ean, date, publisher);
-                        break;
-                    case "Vinyle" :
-                        newDoc = new VinylDisc(title, ean, date, publisher);
-                        break;
-                    case "Disque compact" :
-                        newDoc = new CD(title, ean, date, publisher);
-                        break;
-                    case "Jeux de societe" :
-                        newDoc = new BoardGame(title, ean, date, publisher);
-                        break;
-                    case "Jeux Videos tous publics" :
-                    case "Jeux videos > 18 ans" :
-                        newDoc = new VideoGame(title, ean, date, publisher);
-                        break;
-                    case "Livre de section jeunesse > 12 ans" :
-                    case "Livres et periodiques DAiSY" :
-                    case "Livre de Fonds specialises" :
-                    case "Livre en langue etrangere" :
-                    case "Livre en gros caracteres" :
-                    case "Livre sonore pour adulte" :
-                    case "Livre sonore jeunesse" :
-                    case "Livre pour adulte" :
-                    case "Livre jeunesse" :
-                        newDoc = new Book(title, ean, isbn, date, publisher);
-                        break;
-                    case "Bande dessinee jeunesse >12 ans" :
-                    case "Bande dessinee pour adulte" :
-                    case "BD adulte non reservable" :
-                    case "Bande dessinee jeunesse" :
-                        newDoc = new Comic(title, ean, isbn, date, publisher);
-                        break;
-                    case "Documents numeriques et multimedia jeunesse" :
-                    case "Documents numeriques et multimedia adulte" :
-                    case "Enregistrement musical pour la jeunesse" :
-                    case "Diapositives jeunesse" :
-                    case "Methode de langue" :
-                    case "Methode musicale" :
-                    case "Non empruntable" :
-                    case "Nouveaute" :
-                    case "Usuels" :
-                    default:
-                        newDoc = new Other(title, ean, date, publisher);
-                }
+                newDoc = initDocByType(type, title, ean, isbn, date, publisher);
                 
                 
                 if (!authorName.equals("") || !authorSurname.equals("")) {
@@ -276,11 +220,14 @@ public class FileReader
                 
                 
                 
-                // TODO :
-                // newDoc.setTotalCopies(); // useful ????
-                
-                
-                network.addDocument(newDoc);
+                try {
+                    // TODO :
+                    // newDoc.setTotalCopies(); // useful ????
+                    
+                    network.addDocument(newDoc);
+                } catch (EANAlreadyExists | ISBNAlreadyExists ex) {
+                    System.err.println(ex.getMessage());
+                }
                 
                 if (!seriesTitle.equals("")) {
                     // use seriesNumber ???
@@ -308,5 +255,59 @@ public class FileReader
         network.addLibrary(libSaintSimon);
         
         return network;
+    }
+
+    public static Document initDocByType(String type, String title, String ean, String isbn, String date, String publisher) {
+        switch(type) {
+            case "Partition" :
+                return new SheetMusic(title, ean, date, publisher);
+            case "Revue de Fonds specialises" :
+            case "Revue pour adulte" :
+            case "Revue jeunesse" :
+                return new Review(title, ean, date, publisher);
+            case "Carte ou plan" :
+                return new Plan(title, ean, date, publisher);
+            case "DVD-video tous publics" :
+            case "DVD- video > 18 ans" :
+            case "DVD- video > 12 ans" :
+            case "DVD-video > 16 ans" :
+            case "DVD jeunesse" :
+                return new DVD(title, ean, date, publisher);
+            case "Vinyle" :
+                return new VinylDisc(title, ean, date, publisher);
+            case "Disque compact" :
+                return new CD(title, ean, date, publisher);
+            case "Jeux de societe" :
+                return new BoardGame(title, ean, date, publisher);
+            case "Jeux Videos tous publics" :
+            case "Jeux videos > 18 ans" :
+                return new VideoGame(title, ean, date, publisher);
+            case "Livre de section jeunesse > 12 ans" :
+            case "Livres et periodiques DAiSY" :
+            case "Livre de Fonds specialises" :
+            case "Livre en langue etrangere" :
+            case "Livre en gros caracteres" :
+            case "Livre sonore pour adulte" :
+            case "Livre sonore jeunesse" :
+            case "Livre pour adulte" :
+            case "Livre jeunesse" :
+                return new Book(title, ean, isbn, date, publisher);
+            case "Bande dessinee jeunesse >12 ans" :
+            case "Bande dessinee pour adulte" :
+            case "BD adulte non reservable" :
+            case "Bande dessinee jeunesse" :
+                return new Comic(title, ean, isbn, date, publisher);
+            case "Documents numeriques et multimedia jeunesse" :
+            case "Documents numeriques et multimedia adulte" :
+            case "Enregistrement musical pour la jeunesse" :
+            case "Diapositives jeunesse" :
+            case "Methode de langue" :
+            case "Methode musicale" :
+            case "Non empruntable" :
+            case "Nouveaute" :
+            case "Usuels" :
+            default:
+                return new Other(title, ean, date, publisher);
+        }
     }
 }
