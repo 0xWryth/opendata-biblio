@@ -15,6 +15,10 @@ public class Library {
     private ArrayList<User> registredUsers;
     private final int STANDARD_QUOTA = 5;
 
+    /**
+     * Constructs an empty <tt>Library</tt> with the specified name.
+     * @param name  string corresponding to the name given to the Library.
+     */
     public Library(String name) {
         this.id = Library.nextId++;
         this.name = name;

@@ -19,7 +19,9 @@ public class Network {
     private HashMap<Integer, Series> seriesList;
     private HashMap<Integer, User> users;
 
-
+    /**
+     * Constructs an empty <tt>Network</tt>.
+     */
     public Network() {
         this.libs = new HashMap<>();
         this.docs = new HashMap<>();
@@ -30,7 +32,9 @@ public class Network {
 
     /**
      * Add document in the network if it doesnt already exists.
-     * @param doc 
+     * 
+     * @param doc an instance of Document to add in not already in the network's
+     *            collection.
      * @throws et3.java.exceptions.EANAlreadyExists 
      * @throws et3.java.exceptions.ISBNAlreadyExists 
      */
@@ -73,9 +77,12 @@ public class Network {
     public void addSerie(Series series) {
         this.seriesList.putIfAbsent(series.getId(), series);
     }
-
-    // Change parameter to String to do the new Library() inside the method ??
     
+    /**
+     * Associates a new Library to the network's collection.
+     *
+     * @param lib Library instance to add.
+     */
     public void addLibrary(Library lib) {
         // Two libs with same names but different id can be added..
         Library existingLib = this.libs.putIfAbsent(lib.getId(), lib);
@@ -89,9 +96,11 @@ public class Network {
     
 
     /**
-     *
-     * @param user
-     * @param libId
+     * Associates a new User to the network's collection and register it
+     * in the desired Library.
+     * 
+     * @param user  the new User instance to add.
+     * @param libId the corresponding Library where the User should subscribe.
      */
     public void addUser(User user, int libId) {
         Library lib = this.libs.get(libId);
@@ -111,12 +120,33 @@ public class Network {
             System.err.println("La bibliothèque associée ne fait pas partie du réseau.");
         }
     }
+
+    /**
+     * Add document in a Library of the network's collection.
+     *
+     * @param libraryId integer corresponding to the recipient Library.
+     * @param newDoc    the new Document instance to add.
+     * @param quantity  integer corresponding to the doc quantity to add.
+     */
+    public void addDocumentInLib(int libraryId, Document newDoc, int quantity) {
+        Library lib = this.libs.get(libraryId);
+        
+        if (lib != null) {
+            lib.addDoc(newDoc, quantity);
+            System.out.println("Le document " + newDoc.toString() + " a bien été ajouté "
+                    + quantity + " fois à la bibliothèque " + lib.getName() + ".");
+        } else {
+            System.err.println("Le document " + newDoc.toString() + " n'a pas été ajouté à la bibliothèque "
+                    + libraryId + " car elle n'existe pas dans le réseau.");
+        }
+    }
     
     /**
-     *
-     * @param userId
-     * @param docKey
-     * @param libId
+     * Method in charge of the document borrowing.
+     * 
+     * @param userId    integer corresponding to the User identifier.
+     * @param docKey    Document's EAN+ISBN concatenation corresponding to a network's Document collection index.
+     * @param libId     integer corresponding to the Library identifier.
      * @throws et3.java.exceptions.DocumentBorrowingException
      */
     public void registerBorrowing(int userId, String docKey, int libId) throws DocumentBorrowingException {
@@ -147,14 +177,16 @@ public class Network {
         
         user.borrowDocument(doc, lib);
         lib.removeDocument(doc);
-        System.out.println("Le document a bien été emprunté à la bibliothèque " + lib.getName() + " par " + user.toString() + ".");
+        System.out.println("Le document a bien été emprunté à la bibliothèque "
+                + lib.getName() + " par " + user.toString() + ".");
     }
 
     /**
+     * Method in charge of the return of documents.
      *
-     * @param userId
-     * @param docKey
-     * @param libId
+     * @param userId    integer corresponding to the User identifier.
+     * @param docKey    Document's EAN+ISBN concatenation corresponding to a network's Document collection index.
+     * @param libId     integer corresponding to the Library identifier.
      * @throws et3.java.exceptions.UnregisteredUser
      * @throws et3.java.exceptions.NoDocumentFound
      */
@@ -190,10 +222,11 @@ public class Network {
     }
     
     /**
+     * Method in charge of the document's transfers.
      *
-     * @param libId1
-     * @param libId2
-     * @param docKey
+     * @param libId1    integer corresponding to the source Library identifier.
+     * @param libId2    integer corresponding to the recipient Library identifier.
+     * @param docKey    Document's EAN+ISBN concatenation corresponding to a network's Document collection index.
      * @throws et3.java.exceptions.DocumentNotAvailable
      */
     public void transferDocument(int libId1, int libId2, String docKey) throws DocumentNotAvailable {
@@ -230,8 +263,11 @@ public class Network {
     
     /**
      * Return the corresponding Series or a new Series if not found in network.
-     * @param seriesTitle
-     * @return 
+     * 
+     * @param seriesTitle   a string corresponding to the searched Series.
+     * @return the Series associated with <tt>seriesTitle</tt> in the network,
+     *         or a new Series instance (built with <tt>seriesTitle</tt> as
+     *         title) if it wasn't found.
      */
     public Series getSeries(String seriesTitle) {
         Series existingSeries = null;
@@ -253,9 +289,12 @@ public class Network {
 
     /**
      * Return the corresponding Author or a new Author if not found in network.
-     * @param authorName
-     * @param authorSurname
-     * @return 
+     * 
+     * @param authorName    a string corresponding to the author's name.
+     * @param authorSurname a string corresponding to the author's surname.
+     * @return the corresponding Author or a new Author (built with
+     *         <tt>authorName</tt> and <tt>authorSurname</tt>) if
+     *         not found in network.
      */
     public Author getAuthor(String authorName, String authorSurname) {        
         Author existingAuthor = null;
@@ -293,7 +332,9 @@ public class Network {
         return libs;
     }
 
-    
+    /**
+     * Displays the network's Library collection.
+     */
     public void listLibraries() {        
         this.libs.entrySet().forEach(entry -> {
             System.out.println(entry.getValue());  

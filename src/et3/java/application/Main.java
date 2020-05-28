@@ -37,8 +37,7 @@ public class Main
             {
                 System.out.println("[Main] Reading the file " + args[0] + " ...");
                 
-                //We start by reading the CSV file
-//                FileReader.getDataFromCSVFile(args[0]);
+                // hydrate network
                 network = FileReader.loadDataFromCSVFile(args[0]);
                 
                 System.out.println("[Main] End of the file " + args[0] + ".");
@@ -64,7 +63,7 @@ public class Main
 
 
     /**
-     * Defines actions to do when a key has been pressed.
+     * Defines actions to do when the user interacts with the application.
      */
     private static void handleKeyboard() {
         boolean exitAsked = false;
@@ -143,7 +142,7 @@ public class Main
                 } while (type.isEmpty());
                 
                 String title = null;
-                System.out.println("Entrez le title du document à ajouter : (not null)");
+                System.out.println("Entrez le titre du document à ajouter : (not null)");
                 do {
                     title = sc.nextLine();
                 } while (title.isEmpty());
@@ -192,6 +191,7 @@ public class Main
                 if (!authorName.isEmpty()) {
                     Author docAuthor = network.getAuthor(authorName, authorSurname);
                     newDoc.setAuthor(docAuthor);
+                    docAuthor.addWrittenDoc(newDoc);
                 }
                 
                 if (!seriesTitle.equals("")) {
@@ -205,7 +205,40 @@ public class Main
                     System.err.println(ex.getMessage());
                 }
                 
-                // TODO : in which library ? (optionnal ?)
+                int libraryId = -1;
+                do {
+                    printSeparator();
+                    System.out.println("Parmi les bibliothèques ci-dessous, dans laquelle "
+                            + "ajouter le document :");
+                    network.listLibraries();
+                    System.out.println("(Tapez <Enter> lorsque vous avez fini)");
+                    
+                    String s = sc.nextLine();
+                    if (s.isEmpty()) {
+                        break;
+                    }
+                    
+                    do {
+                        try {
+                            libraryId = Integer.parseInt(s);
+                        } catch (NumberFormatException e) {
+                            System.err.println(e.getMessage());
+                        }
+                    } while (libraryId < 0);
+                    
+                    
+                    System.out.println("Entrez le nombre de copies à ajouter :");
+                    int copy = -1;
+                    do {
+                        try {
+                            copy = Integer.parseInt(sc.nextLine());
+                        } catch (NumberFormatException e) {
+                            System.err.println(e.getMessage());
+                        }
+                    } while (copy < 0);
+                    
+                    network.addDocumentInLib(libraryId, newDoc, copy);
+                } while (true);
                 
                 break;
             case "u":

@@ -10,10 +10,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * FileReader is an utility class used to parse a .csv into a Network wich can
@@ -23,8 +19,9 @@ import java.util.logging.Logger;
 public class FileReader
 {
     /**
-     *
-     * @param csvFilePath
+     * Fill a Network instance from a .csv file.
+     * 
+     * @param csvFilePath   a string corresponding to the .csv file path.
      * @return A filled Network object
      * @author EugenieBrasier, adepreis
      */
@@ -91,9 +88,6 @@ public class FileReader
                 ean = data[1];
                 
                 
-                /* TODO : IF A DOC WITH THE SAME EAN EXISTS, WHAT DO ? */
-                
-                
                 if(ean.equals("") && isbn.equals(""))
                     continue;   // ignore document with no "serial number"
                 
@@ -121,7 +115,7 @@ public class FileReader
                         date = dateInt%10000 + "-" + dateInt/10000;
                     }
                 }
-                catch (Exception exception)
+                catch (NumberFormatException exception)
                 {
                     date = "?";
                 }
@@ -257,6 +251,17 @@ public class FileReader
         return network;
     }
 
+    /**
+     * Constructs a Document of the correct type and based on its properties.
+     * 
+     * @param type
+     * @param title
+     * @param ean
+     * @param isbn
+     * @param date
+     * @param publisher
+     * @return a Document instance.
+     */
     public static Document initDocByType(String type, String title, String ean, String isbn, String date, String publisher) {
         switch(type) {
             case "Partition" :

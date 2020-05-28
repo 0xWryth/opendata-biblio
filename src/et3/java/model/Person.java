@@ -9,6 +9,11 @@ public abstract class Person {
     private String name;
     private String surname;
 
+    /**
+     * Constructs an empty <tt>Person</tt> with the specified name and surname.
+     * @param name      string corresponding to the name given to the Person.
+     * @param surname   string corresponding to the surname given to the Person.
+     */
     public Person(String name, String surname) {
         this.name = name;
         this.surname = surname;

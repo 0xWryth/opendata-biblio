@@ -12,6 +12,11 @@ public class User extends Person {
     private final int id;
     private HashMap<Integer, LibraryAccount> registredLib;     // first int : lib id
 
+    /**
+     * {@inheritDoc}
+     * @param name      string corresponding to the name given to the User.
+     * @param surname   string corresponding to the surname given to the User.
+     */
     public User(String name, String surname) {
         super(name, surname);
         this.id = User.nextId++;

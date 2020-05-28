@@ -8,6 +8,14 @@ public class Book extends Document {
     
     private String ISBN;
 
+    /**
+     * {@inheritDoc}
+     * @param title
+     * @param EAN
+     * @param isbn
+     * @param date
+     * @param publisher
+     */
     public Book(String title, String EAN, String isbn, String date, String publisher) {
         // TODO : manage books with ISBN but no EAN
         super(title, EAN, date, publisher);

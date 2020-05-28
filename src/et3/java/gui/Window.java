@@ -64,7 +64,7 @@ public class Window extends JFrame {
         /* TODO */
         docs.forEach((s, d) -> {
             String ISBN = d instanceof Book ? ((Book) d).getISBN() : "";
-            Object[] toAdd = {d.getClass().getSimpleName(), d.getEAN(), d.getTitle(), d.getDate(), d.getPublisher(), ISBN};
+            Object[] toAdd = {d.getClass().getSimpleName(), d.getEAN(), d.getFullTitle(), d.getDate(), d.getPublisher(), ISBN};
             m.addRow(toAdd);
         });
         docTab.setModel(m);

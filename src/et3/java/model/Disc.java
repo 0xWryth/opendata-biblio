@@ -6,6 +6,13 @@ package et3.java.model;
  */
 public abstract class Disc extends Document {
     
+    /**
+     * {@inheritDoc}
+     * @param title
+     * @param EAN
+     * @param date
+     * @param publisher
+     */
     public Disc(String title, String EAN, String date, String publisher) {
         super(title, EAN, date, publisher);
     }
