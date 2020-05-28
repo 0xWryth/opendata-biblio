@@ -58,13 +58,15 @@ public class Window extends JFrame {
         libTab.setModel(m);
     }
 
-    public void setDocData(ArrayList<Document> docs) {
+    public void setDocData(HashMap<String, Document> docs) {
         DefaultTableModel m = docTab.getModel();
-        for (Document doc : docs) {
-            String ISBN = doc instanceof Book ? ((Book) doc).getISBN() : "";
-            Object[] toAdd = {doc.getClass().getSimpleName(), doc.getEAN(), doc.getTitle(), doc.getDate(), doc.getPublisher(), ISBN};
+        
+        /* TODO */
+        docs.forEach((s, d) -> {
+            String ISBN = d instanceof Book ? ((Book) d).getISBN() : "";
+            Object[] toAdd = {d.getClass().getSimpleName(), d.getEAN(), d.getFullTitle(), d.getDate(), d.getPublisher(), ISBN};
             m.addRow(toAdd);
-        }
+        });
         docTab.setModel(m);
     }
 

@@ -14,6 +14,15 @@ public abstract class Document {
     private String publisher;
     private Author author;
 
+    /**
+     * Constructs an empty <tt>Document</tt> with the specified title, EAN,
+     * date and publisher.
+     * 
+     * @param title a string corresponding to the title given to the Document.
+     * @param EAN   a string corresponding to the Document's ean.
+     * @param date  a string corresponding to the Document's isbn.
+     * @param publisher  a string corresponding to the Document's publisher.
+     */
     public Document(String title, String EAN, String date, String publisher) {
         this.title = title;
         this.EAN = EAN;
@@ -59,7 +68,7 @@ public abstract class Document {
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + " : \"" + title
+        return this.getClass().getSimpleName() + " : \"" + getTitle()
                 + "\", author=" + author + ", EAN=" + EAN
                 + ", published in " + date + " by " + publisher;
     }
@@ -73,6 +82,10 @@ public abstract class Document {
     }
 
     public String getTitle() {
+        return title.length() > 15 ? title.substring(0, 14) + "..." : title;
+    }
+
+    public String getFullTitle() {
         return title;
     }
 

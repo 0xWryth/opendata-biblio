@@ -6,6 +6,13 @@ package et3.java.model;
  */
 public abstract class Game extends Document {
     
+    /**
+     * {@inheritDoc}
+     * @param title
+     * @param EAN
+     * @param date
+     * @param publisher
+     */
     public Game(String title, String EAN, String date, String publisher) {
         super(title, EAN, date, publisher);
     }

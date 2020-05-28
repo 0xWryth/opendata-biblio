@@ -3,11 +3,12 @@ package et3.java.application;
 import java.io.File;
 
 import et3.java.data.FileReader;
+import et3.java.exceptions.*;
 import et3.java.gui.Window;
 import et3.java.model.Author;
 import et3.java.model.Document;
 import et3.java.model.Library;
-import et3.java.model.Plan;
+import et3.java.model.Series;
 import et3.java.model.User;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -36,8 +37,7 @@ public class Main
             {
                 System.out.println("[Main] Reading the file " + args[0] + " ...");
                 
-                //We start by reading the CSV file
-//                FileReader.getDataFromCSVFile(args[0]);
+                // hydrate network
                 network = FileReader.loadDataFromCSVFile(args[0]);
                 
                 System.out.println("[Main] End of the file " + args[0] + ".");
@@ -49,84 +49,12 @@ public class Main
         }
         else
         {
-            System.err.println("[Main] You should enter the CSV file path as a parameter.");
+            System.err.println("[Main] You should Entrez le CSV file path as a parameter.");
         }
         
         //TODO Project :)
         if (network == null)
             return;
-
-        // ------------------------------------------------------------------------------
-        // TESTING TO ADD 2 TIME THE SAME LIBRARY
-        Library newLib = new Library("Médiathèque des quais");
-        network.addLibrary(newLib);
-
-        // Adding the same library a second time
-        network.addLibrary(newLib); /* => triggers Serr("non add car existe") */
-
-        // Adding the same library with a different reference
-        network.addLibrary(new Library("Médiathèque des quais"));
-
-        // Printing library list
-        network.listLibraries();
-        //        network.listDocuments();
-        // ------------------------------------------------------------------------------
-
-
-
-        // ------------------------------------------------------------------------------
-        // TESTING TO ADD 2 TIME THE SAME USER
-        User paul = new User("Paul", "Dupont");
-        network.addUser(new User("Pierre", "Dupont"), newLib.getId());
-
-
-        network.addUser(new User("Pierre", "Dupont"), newLib.getId());
-        network.addUser(paul, newLib.getId());
-        network.addUser(paul, newLib.getId());     // triggers Serr("non add car existe")
-        // ------------------------------------------------------------------------------
-
-
-
-        // ------------------------------------------------------------------------------
-        // TESTING TO ADD AN USER TO AN UNKNOWN LIBRARY
-        Library unregistredLib = new Library("Lib test");
-        network.addUser(new User("test", "test"), unregistredLib.getId());     // triggers Serr("non add car lib inconnue")
-        // ------------------------------------------------------------------------------
-
-
-
-        // ------------------------------------------------------------------------------
-        // TESTING TO ADD REGISTER AN USER A SECOND TIME TO A LIBRARY HE IS ALREADY REGISTERED ON
-        
-        // triggers Serr("déjà abonné") but should'nt be called here (should be
-        // called across the Network) because newLib is here for test purpose
-        newLib.registerUser(paul);
-        // ------------------------------------------------------------------------------
-
-
-
-        // ------------------------------------------------------------------------------
-        // TESTING TO ADD TWO TIME THE SAME DOCUMENT
-        Document carteAlpes = new Plan("Carte des Alpes", "iueuhfpiuezgfp", "2020", "Office de tourisme des Alpes");
-        carteAlpes.setAuthor(new Author("aaaa", "bbb"));
-        network.addDocument(carteAlpes);
-
-        network.addDocument(carteAlpes); // triggers Serr()
-        // ------------------------------------------------------------------------------
-
-
-
-        // ------------------------------------------------------------------------------
-        // TESTING Borrowing
-        //paul.borrowDocument(carteAlpes, newLib);
-        // ------------------------------------------------------------------------------
-
-        
-        // ------------------------------------------------------------------------------
-        // TEST Return document
-        //paul.returnDocument(carteAlpes, newLib);
-        // ------------------------------------------------------------------------------
-
         
         handleKeyboard();
         
@@ -135,7 +63,7 @@ public class Main
 
 
     /**
-     * Defines actions to do when a key has been pressed.
+     * Defines actions to do when the user interacts with the application.
      */
     private static void handleKeyboard() {
         boolean exitAsked = false;
@@ -146,6 +74,7 @@ public class Main
             System.out.println("[A]jouter");
             System.out.println("[L]ister");
             System.out.println("[C]hercher");
+            System.out.println("[E]mprunter / Retourner");
             System.out.println("\n[Q]uitter\n");
 
             String actionChoice = null;
@@ -157,16 +86,16 @@ public class Main
 
             switch (actionChoice.toLowerCase()) {
                 case "a":
-                    // System.out.println("Vous avez choisi : Ajouter");
                     performAdding();
                     break;
                 case "l":
-                    // System.out.println("Vous avez choisi : Lister");
                     performListing();
                     break;
                 case "c":
-                    // System.out.println("Vous avez choisi : Chercher");
                     performFinding();
+                    break;
+                case "e":
+                    performBorrowing();
                     break;
                 case "q":
                     exitAsked = true;
@@ -206,19 +135,111 @@ public class Main
                 
                 break;
             case "d":
-                System.out.println("TODO : Ajout d'un Document");
+                String type = null;
+                System.out.println("Entrez le type du document à ajouter : (not null)");
+                do {
+                    type = sc.nextLine();
+                } while (type.isEmpty());
                 
-                // RE-use/mutualise FileReader loader logic ???
+                String title = null;
+                System.out.println("Entrez le titre du document à ajouter : (not null)");
+                do {
+                    title = sc.nextLine();
+                } while (title.isEmpty());
                 
-                // Define Type (not null)
-                // Define title (not null)
-                // Define EAN
-                // Define ISBN
-                // Define date
-                // Define publisher
-                // Define author
+                String ean = null;
+                System.out.println("Entrez l'EAN du document à ajouter : (nullable)");
+                ean = sc.nextLine();
                 
-                // network.addDoc(newDoc);
+                String isbn = null;
+                if (ean.isEmpty()) {
+                    System.out.println("Entrez l'ISBN du document à ajouter : (not null because EAN is null)");
+                    do {
+                        isbn = sc.nextLine();
+                    } while (isbn.isEmpty());
+                } else  {
+                    System.out.println("Entrez l'ISBN du document à ajouter : (nullable)");
+                    isbn = sc.nextLine();
+                }
+                
+                String date = null;
+                System.out.println("Entrez la date du document à ajouter : (nullable)");
+                date = sc.nextLine();
+                
+                String publisher = null;
+                System.out.println("Entrez l'éditeur du document à ajouter : (nullable)");
+                publisher = sc.nextLine();
+                
+                String authorName = null;
+                System.out.println("Entrez le prénom de l'auteur du document à ajouter : (nullable)");
+                authorName = sc.nextLine();
+                
+                String authorSurname = null;
+                if (!authorName.isEmpty()) {
+                    System.out.println("Entrez le nom de l'auteur du document à ajouter : (not null because authorSurname is not null)");
+                    do {
+                        authorSurname = sc.nextLine();
+                    } while (authorSurname.isEmpty());
+                }
+                
+                String seriesTitle = null;
+                System.out.println("Entrez la série à laquelle appartient le document à ajouter : (nullable)");
+                seriesTitle = sc.nextLine();
+                
+                Document newDoc = FileReader.initDocByType(type, title, ean, isbn, date, publisher);
+                
+                if (!authorName.isEmpty()) {
+                    Author docAuthor = network.getAuthor(authorName, authorSurname);
+                    newDoc.setAuthor(docAuthor);
+                    docAuthor.addWrittenDoc(newDoc);
+                }
+                
+                if (!seriesTitle.equals("")) {
+                    Series docSerie = network.getSeries(seriesTitle);
+                    docSerie.addDoc(newDoc);
+                }
+                
+                try {
+                    network.addDocument(newDoc);
+                } catch (EANAlreadyExists | ISBNAlreadyExists ex) {
+                    System.err.println(ex.getMessage());
+                }
+                
+                int libraryId = -1;
+                do {
+                    printSeparator();
+                    System.out.println("Parmi les bibliothèques ci-dessous, dans laquelle "
+                            + "ajouter le document :");
+                    network.listLibraries();
+                    System.out.println("(Tapez <Enter> lorsque vous avez fini)");
+                    
+                    String s = sc.nextLine();
+                    if (s.isEmpty()) {
+                        break;
+                    }
+                    
+                    do {
+                        try {
+                            libraryId = Integer.parseInt(s);
+                        } catch (NumberFormatException e) {
+                            System.err.println(e.getMessage());
+                        }
+                    } while (libraryId < 0);
+                    
+                    
+                    System.out.println("Entrez le nombre de copies à ajouter :");
+                    int copy = -1;
+                    do {
+                        try {
+                            copy = Integer.parseInt(sc.nextLine());
+                        } catch (NumberFormatException e) {
+                            System.err.println(e.getMessage());
+                        }
+                    } while (copy < 0);
+                    
+                    network.addDocumentInLib(libraryId, newDoc, copy);
+                } while (true);
+                
                 break;
             case "u":
                 System.out.println("Entrez le prénom de l'utilisateur à ajouter :");
@@ -228,10 +249,11 @@ public class Main
                 String surname = sc.nextLine();
                 
                 
-                System.out.println("Parmi les bibliothèques ci-dessous, entrez le numéro à laquelle inscrire le nouvel utilisateur :");
+                System.out.println("Parmi les bibliothèques ci-dessous, entrez le "
+                        + "numéro à laquelle inscrire le nouvel utilisateur :");
                 network.listLibraries();
                 
-                // TODO : what do if NaN ?
+                // TODO : what do if NaN ? if not an existing libId ?
                 int libNumber = sc.nextInt();
                 network.addUser(new User(name, surname), libNumber);
                 
@@ -287,13 +309,6 @@ public class Main
         
         System.out.println("\nFermez la fenêtre \"Consultation\" pour revenir à l'accueil.\n");
         
-        
-        // Why are 'd' or 'b' or 'u' sometime skipped ?!?
-        // Why in these cases the window isnt active  ?!?
-        // forced to put a    Thread.sleep(100);    to let the window open up...
-    
-        System.out.println("[debug] isActive: " + f.isActive());
-        
         while (((Window) f).isActive()) { }     // wait window closing
         
         f.dispose();
@@ -302,7 +317,7 @@ public class Main
     private static void performFinding() {
         printSeparator();
         
-        System.out.println("Quelle type de recherche souhaitez vous effectuer ? (entrez la lettre entre crochets)\n");
+        System.out.println("Quel type de recherche souhaitez vous effectuer ? (entrez la lettre entre crochets)\n");
         
         System.out.println("[A]uteur (trouver tous les documents d’un même auteur)");
         System.out.println("[I]SBN \t(trouver un livre par son ISBN)");
@@ -335,6 +350,174 @@ public class Main
                 break;
             case "r":
                 return;
+            default:
+                System.err.println("Touche non reconnue !");
+        }
+    }
+
+
+    private static void performBorrowing() {
+        int userId = -1;
+        String docEAN;
+        String docISBN = "";
+        int libId = -1;
+        
+        printSeparator();
+        
+        System.out.println("Action emprunt/retour ? (entrez la lettre entre crochets)\n");
+        
+        System.out.println("[E]mprunt utilisateur");
+        System.out.println("[R]etour utilisateur");
+        System.out.println("[T]ransférer des documents entre bibliothèques");
+        System.out.println("\n[A]nnuler\n");
+        
+        String exchangeChoice = null;
+        
+        do {
+            exchangeChoice = sc.nextLine();
+        } while (exchangeChoice.isEmpty());
+        
+        
+        switch (exchangeChoice.toLowerCase()) {
+            case "e":
+//                System.out.println("Prénom de l'utilisateur qui souhaite emprunter :");
+//                String name = sc.nextLine();
+//                
+//                System.out.println("Nom de l'utilisateur qui souhaite emprunter :");
+//                String surname = sc.nextLine();
+                
+                // Use ID instead of name/surname ?
+                System.out.println("Identifiant de l'utilisateur qui souhaite emprunter :");
+                do {
+                    try {
+                        userId = Integer.parseInt(sc.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.err.println(e.getMessage());
+                    }
+                } while (userId < 0);
+
+                
+                System.out.println("EAN du document à emprunter : (nullable)");
+                docEAN = sc.nextLine();
+                
+                if (docEAN.isEmpty()) {
+                    do {
+                        System.out.println("ISBN du document à emprunter : (not null)");
+                        docISBN = sc.nextLine();
+                    } while (docISBN.isEmpty());
+                } else {
+                    System.out.println("ISBN du document à emprunter : (nullable)");
+                    docISBN = sc.nextLine();
+                }
+                
+                System.out.println("Saisisez où emprunter le document parmi les bibliothèques ci-dessous :");
+                network.listLibraries();
+                
+                do {
+                    try {
+                        libId = Integer.parseInt(sc.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.err.println(e.getMessage());
+                    }
+                } while (libId < 0);
+                
+                try {
+                    network.registerBorrowing(userId, docEAN + docISBN, libId);
+                } catch (DocumentBorrowingException dbe) {
+                    System.err.println(dbe.getMessage());
+                }
+                break;
+            
+            case "r":
+                System.out.println("Identifiant de l'utilisateur qui souhaite emprunter :");
+                do {
+                    try {
+                        userId = Integer.parseInt(sc.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.err.println(e.getMessage());
+                    }
+                } while (userId < 0);
+
+                
+                System.out.println("EAN du document à emprunter : (nullable)");
+                docEAN = sc.nextLine();
+                
+                if (docEAN.isEmpty()) {
+                    do {
+                        System.out.println("ISBN du document à emprunter : (not null)");
+                        docISBN = sc.nextLine();
+                    } while (docISBN.isEmpty());
+                } else {
+                    System.out.println("ISBN du document à emprunter : (nullable)");
+                    docISBN = sc.nextLine();
+                }
+                
+                System.out.println("Saisisez où emprunter le document parmi les bibliothèques ci-dessous :");
+                network.listLibraries();
+                
+                do {
+                    try {
+                        libId = Integer.parseInt(sc.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.err.println(e.getMessage());
+                    }
+                } while (libId < 0);
+                
+                try {
+                    network.recordDocumentReturn(userId, docEAN + docISBN, libId);
+                } catch (UnregisteredUser | NoDocumentFound ex) {
+                    System.err.println(ex.getMessage());
+                }
+                break;
+            
+            case "t":                
+                System.out.println("Bibliothèque d'origine ? ... :");
+                network.listLibraries();
+                
+                int libId1 = -1;
+                do {
+                    try {
+                        libId1 = Integer.parseInt(sc.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.err.println(e.getMessage());
+                    }
+                } while (libId1 < 0);
+                
+                System.out.println("Bibliothèque destinataire ? ... :");
+                network.listLibraries();
+                
+                int libId2 = -1;
+                do {
+                    try {
+                        libId2 = Integer.parseInt(sc.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.err.println(e.getMessage());
+                    }
+                } while (libId2 < 0);
+                
+                System.out.println("EAN du document à transférer ? ... :");
+                docEAN = sc.nextLine();
+                
+                if (docEAN.isEmpty()) {
+                    do {
+                        System.out.println("ISBN du document à emprunter : (not null)");
+                        docISBN = sc.nextLine();
+                    } while (docISBN.isEmpty());
+                } else {
+                    System.out.println("ISBN du document à emprunter : (nullable)");
+                    docISBN = sc.nextLine();
+                }
+                
+                try {
+                    network.transferDocument(libId1, libId2, docEAN + docISBN);
+                } catch (DocumentNotAvailable ex) {
+                    System.err.println(ex.getMessage());
+                }
+                break;
+                
+            case "a":
+                return;
+                
             default:
                 System.err.println("Touche non reconnue !");
         }

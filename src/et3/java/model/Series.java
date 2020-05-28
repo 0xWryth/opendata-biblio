@@ -24,4 +24,8 @@ public class Series {
         this.documents.add(newDoc);
         // newDoc.addSerie(this); ?????
     }
+
+    public String getTitle() {
+        return title;
+    }
 }

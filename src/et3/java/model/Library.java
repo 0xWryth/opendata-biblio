@@ -15,6 +15,10 @@ public class Library {
     private ArrayList<User> registredUsers;
     private final int STANDARD_QUOTA = 5;
 
+    /**
+     * Constructs an empty <tt>Library</tt> with the specified name.
+     * @param name  string corresponding to the name given to the Library.
+     */
     public Library(String name) {
         this.id = Library.nextId++;
         this.name = name;
@@ -22,9 +26,17 @@ public class Library {
         this.registredUsers = new ArrayList<>();
     }
     
-    public void addDoc(Document doc, int numberOfDoc) {
-        // TODO : check if it already exists before adding (just add +1 in "quantity")
-        this.documents.put(doc, numberOfDoc);
+    /**
+     * Add document in the library. If it already exists, update quantity.
+     * @param doc
+     * @param numberOfDoc 
+     */
+    public void addDoc(Document doc, int numberOfDoc) {        
+        if (this.documents.containsKey(doc)) {
+            this.documents.put(doc, numberOfDoc + this.documents.get(doc));
+        } else {
+            this.documents.put(doc, numberOfDoc);
+        }
     }
     
     /**
@@ -56,12 +68,29 @@ public class Library {
     }
     
     /**
+     *
+     * @param doc 
+     */
+    public void removeDocument(Document doc) {
+        if (this.hasDocument(doc)) {
+            if (this.documents.get(doc) == 1) {
+                this.documents.remove(doc);
+            } else {
+                this.documents.put(doc, this.documents.get(doc) - 1);
+            }
+        }
+    }
+    
+    /**
      * 
      * @param lib
+     * @param doc
      */
-    public void exchangeDocument(Library lib) {
-        // TODO - implement Library.exchangeDocument
-        throw new UnsupportedOperationException();
+    public void exchangeDocument(Library lib, Document doc) {
+        if (this.hasDocument(doc)) {
+            this.removeDocument(doc);
+            lib.addDoc(doc, 1);
+        }
     }
     
     /**
@@ -99,5 +128,13 @@ public class Library {
 
     public String getName() {
         return name;
+    }
+
+    public boolean hasDocument(Document doc) {
+        return this.documents.containsKey(doc);
+    }
+
+    public boolean hasUser(User user) {
+        return this.registredUsers.contains(user);
     }
 }

@@ -1,5 +1,6 @@
 package et3.java.model;
 
+import et3.java.exceptions.*;
 import java.util.*;
 
 /**
@@ -9,8 +10,13 @@ import java.util.*;
 public class User extends Person {
     private static int nextId = 1;
     private final int id;
-    private HashMap<Integer, Integer> registredLib;     // first int : lib id, second : quota allowed
+    private HashMap<Integer, LibraryAccount> registredLib;     // first int : lib id
 
+    /**
+     * {@inheritDoc}
+     * @param name      string corresponding to the name given to the User.
+     * @param surname   string corresponding to the surname given to the User.
+     */
     public User(String name, String surname) {
         super(name, surname);
         this.id = User.nextId++;
@@ -19,22 +25,39 @@ public class User extends Person {
     
     /**
      *
-     * @param d
-     * @param l
+     * @param doc
+     * @param lib
+     * @throws et3.java.exceptions.UnregisteredUser
+     * @throws et3.java.exceptions.DocumentQuotaReached
      */
-    public void borrowDocument(Document d, Library l) {
-        // TODO - implement User.borrowDocument
-        throw new UnsupportedOperationException();
+    public void borrowDocument(Document doc, Library lib) throws DocumentBorrowingException {
+        LibraryAccount account = this.registredLib.get(lib.getId());
+        
+        if (account == null){
+            throw new UnregisteredUser();
+        }
+
+        account.addBorrowedDocument(doc);
     }
     
     /**
      *
      * @param d
-     * @param l
+     * @throws et3.java.exceptions.NoDocumentFound
      */
-    public void returnDocument(et3.java.model.Document d, et3.java.model.Library l) {
-        // TODO - implement User.returnDocument
-        throw new UnsupportedOperationException();
+    public void returnDocument(Document d) throws NoDocumentFound {
+        boolean isRemoved = false;
+        
+        for(Map.Entry<Integer, LibraryAccount> entry : this.registredLib.entrySet()) {
+            if (isRemoved = entry.getValue().removeBorrowedDocument(d)) {
+                isRemoved = true;
+                break;
+            }
+        }
+        
+        if (!isRemoved) {
+            throw new NoDocumentFound("Impossible de rendre ce document. Il n'a pas été emprunté par l'utilisateur.");
+        }
     }
     
     /**
@@ -43,7 +66,7 @@ public class User extends Person {
      * @param quota
      */
     public void subscribe(Library lib, int quota) {
-        this.registredLib.put(lib.getId(), quota);
+        this.registredLib.put(lib.getId(), new LibraryAccount(quota));
     }
     
     /**
