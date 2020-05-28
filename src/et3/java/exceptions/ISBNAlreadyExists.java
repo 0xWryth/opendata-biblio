@@ -1,5 +1,11 @@
 package et3.java.exceptions;
 
+/**
+ * Thrown to indicate that a Book can't have the same ISBN than an existing
+ * Book.
+ * 
+ * @author Antonin
+ */
 public class ISBNAlreadyExists extends DocumentAddingException {
 
     /**

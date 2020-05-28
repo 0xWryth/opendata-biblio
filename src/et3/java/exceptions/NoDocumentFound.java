@@ -1,5 +1,11 @@
 package et3.java.exceptions;
 
+/**
+ * Thrown to indicate that no document was found during a research, a borrow,
+ * a return or a transfer.
+ * 
+ * @author Antonin
+ */
 public class NoDocumentFound extends Exception {
 
     /**

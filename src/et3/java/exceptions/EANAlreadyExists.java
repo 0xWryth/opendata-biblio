@@ -1,5 +1,11 @@
 package et3.java.exceptions;
 
+/**
+ * Thrown to indicate that a Document can't have the same EAN than an existing
+ * Document.
+ * 
+ * @author Antonin
+ */
 public class EANAlreadyExists extends DocumentAddingException {
 
     /**

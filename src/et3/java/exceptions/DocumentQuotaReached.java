@@ -1,5 +1,11 @@
 package et3.java.exceptions;
 
+/**
+ * Thrown to indicate that a User can't borrow another Document from a Library
+ * because it already reached it allocated quota.
+ * 
+ * @author Antonin
+ */
 public class DocumentQuotaReached extends DocumentBorrowingException {
 
     /**

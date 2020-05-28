@@ -1,5 +1,11 @@
 package et3.java.exceptions;
 
+/**
+ * Its subclasses are thrown to indicate that the application's user
+ * has attempted an adding action but something went wrong.
+ * 
+ * @author Antonin
+ */
 public abstract class DocumentAddingException extends Exception {
 
     /**

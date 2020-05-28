@@ -1,5 +1,10 @@
 package et3.java.exceptions;
 
+/**
+ * Thrown to indicate that a User isn't registred in a selected Library.
+ * 
+ * @author Antonin
+ */
 public class UnregisteredUser extends DocumentBorrowingException {
 
     /**

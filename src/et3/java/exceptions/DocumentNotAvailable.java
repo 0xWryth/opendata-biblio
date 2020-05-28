@@ -1,5 +1,10 @@
 package et3.java.exceptions;
 
+/**
+ * Thrown to indicate that a Document isn't available from the selected Library.
+ * 
+ * @author Antonin
+ */
 public class DocumentNotAvailable extends DocumentBorrowingException {
 
     /**

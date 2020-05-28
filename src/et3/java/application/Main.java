@@ -11,8 +11,6 @@ import et3.java.model.Library;
 import et3.java.model.Series;
 import et3.java.model.User;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.*;
 
@@ -228,14 +226,7 @@ public class Main
                     
                     
                     System.out.println("Entrez le nombre de copies à ajouter :");
-                    int copy = -1;
-                    do {
-                        try {
-                            copy = Integer.parseInt(sc.nextLine());
-                        } catch (NumberFormatException e) {
-                            System.err.println(e.getMessage());
-                        }
-                    } while (copy < 0);
+                    int copy = inputPositiveInteger();
                     
                     network.addDocumentInLib(libraryId, newDoc, copy);
                 } while (true);
@@ -252,9 +243,8 @@ public class Main
                 System.out.println("Parmi les bibliothèques ci-dessous, entrez le "
                         + "numéro à laquelle inscrire le nouvel utilisateur :");
                 network.listLibraries();
+                int libNumber = inputPositiveInteger();
                 
-                // TODO : what do if NaN ? if not an existing libId ?
-                int libNumber = sc.nextInt();
                 network.addUser(new User(name, surname), libNumber);
                 
                 break;
@@ -388,14 +378,7 @@ public class Main
                 
                 // Use ID instead of name/surname ?
                 System.out.println("Identifiant de l'utilisateur qui souhaite emprunter :");
-                do {
-                    try {
-                        userId = Integer.parseInt(sc.nextLine());
-                    } catch (NumberFormatException e) {
-                        System.err.println(e.getMessage());
-                    }
-                } while (userId < 0);
-
+                userId = inputPositiveInteger();
                 
                 System.out.println("EAN du document à emprunter : (nullable)");
                 docEAN = sc.nextLine();
@@ -412,14 +395,7 @@ public class Main
                 
                 System.out.println("Saisisez où emprunter le document parmi les bibliothèques ci-dessous :");
                 network.listLibraries();
-                
-                do {
-                    try {
-                        libId = Integer.parseInt(sc.nextLine());
-                    } catch (NumberFormatException e) {
-                        System.err.println(e.getMessage());
-                    }
-                } while (libId < 0);
+                libId = inputPositiveInteger();
                 
                 try {
                     network.registerBorrowing(userId, docEAN + docISBN, libId);
@@ -430,14 +406,7 @@ public class Main
             
             case "r":
                 System.out.println("Identifiant de l'utilisateur qui souhaite emprunter :");
-                do {
-                    try {
-                        userId = Integer.parseInt(sc.nextLine());
-                    } catch (NumberFormatException e) {
-                        System.err.println(e.getMessage());
-                    }
-                } while (userId < 0);
-
+                userId = inputPositiveInteger();
                 
                 System.out.println("EAN du document à emprunter : (nullable)");
                 docEAN = sc.nextLine();
@@ -454,14 +423,7 @@ public class Main
                 
                 System.out.println("Saisisez où emprunter le document parmi les bibliothèques ci-dessous :");
                 network.listLibraries();
-                
-                do {
-                    try {
-                        libId = Integer.parseInt(sc.nextLine());
-                    } catch (NumberFormatException e) {
-                        System.err.println(e.getMessage());
-                    }
-                } while (libId < 0);
+                libId = inputPositiveInteger();
                 
                 try {
                     network.recordDocumentReturn(userId, docEAN + docISBN, libId);
@@ -473,27 +435,12 @@ public class Main
             case "t":                
                 System.out.println("Bibliothèque d'origine ? ... :");
                 network.listLibraries();
-                
-                int libId1 = -1;
-                do {
-                    try {
-                        libId1 = Integer.parseInt(sc.nextLine());
-                    } catch (NumberFormatException e) {
-                        System.err.println(e.getMessage());
-                    }
-                } while (libId1 < 0);
+                int libId1 = inputPositiveInteger();
                 
                 System.out.println("Bibliothèque destinataire ? ... :");
                 network.listLibraries();
-                
-                int libId2 = -1;
-                do {
-                    try {
-                        libId2 = Integer.parseInt(sc.nextLine());
-                    } catch (NumberFormatException e) {
-                        System.err.println(e.getMessage());
-                    }
-                } while (libId2 < 0);
+                // TODO : force libId2 != libId1 "client side" (already handled ""server side"")
+                int libId2 = inputPositiveInteger();
                 
                 System.out.println("EAN du document à transférer ? ... :");
                 docEAN = sc.nextLine();
@@ -529,5 +476,22 @@ public class Main
      */
     private static void printSeparator() {
         System.out.println("\n=======================================================================================");
+    }
+
+    /**
+     * Asks a positive integer to the application user.
+     * @return <tt>input</tt>, a positive integer.
+     */
+    private static int inputPositiveInteger() {
+        int input = -1;
+        do {
+            try {
+                input = Integer.parseInt(sc.nextLine());
+            } catch (NumberFormatException e) {
+                System.err.println("\"" + input + "\" est une entrée incorrecte. Veuillez entrer un entier positif.");
+            }
+        } while (input < 0);
+        
+        return input;
     }
 }

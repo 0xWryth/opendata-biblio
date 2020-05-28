@@ -17,6 +17,7 @@ public class Library {
 
     /**
      * Constructs an empty <tt>Library</tt> with the specified name.
+     * 
      * @param name  string corresponding to the name given to the Library.
      */
     public Library(String name) {
@@ -28,6 +29,7 @@ public class Library {
     
     /**
      * Add document in the library. If it already exists, update quantity.
+     * 
      * @param doc
      * @param numberOfDoc 
      */
@@ -40,8 +42,9 @@ public class Library {
     }
     
     /**
+     * Add a User to the library's registred users collection.
      *
-     * @param user
+     * @param user the User instance to add.
      */
     public void registerUser(User user) {
         if (!this.registredUsers.contains(user)) {
@@ -53,8 +56,9 @@ public class Library {
     }
     
     /**
-     *
-     * @param user
+     * Removes a User from the library's registred users.
+     * 
+     * @param user the User instance to remove.
      */
     public void removeUser(User user) {
         
@@ -68,8 +72,9 @@ public class Library {
     }
     
     /**
-     *
-     * @param doc 
+     * Remove one copy of a Document in the library.
+     * 
+     * @param doc the document to remove.
      */
     public void removeDocument(Document doc) {
         if (this.hasDocument(doc)) {
@@ -82,11 +87,16 @@ public class Library {
     }
     
     /**
+     * Send one Document's copy to an other Library.
      * 
-     * @param lib
-     * @param doc
+     * @param lib the receiving library.
+     * @param doc the document to exchange.
      */
     public void exchangeDocument(Library lib, Document doc) {
+        if (lib == this) {
+            return;
+        }
+        
         if (this.hasDocument(doc)) {
             this.removeDocument(doc);
             lib.addDoc(doc, 1);
@@ -103,6 +113,7 @@ public class Library {
     
     /**
      * Displays a view of the corresponding document(s).
+     * 
      * @param date
      */
     public void listByDate(String date) {
@@ -112,6 +123,7 @@ public class Library {
     
     /**
      * Displays a view of the corresponding document(s).
+     * 
      * @param author
      */
     public void listByAuthor(Author author) {

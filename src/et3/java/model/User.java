@@ -24,9 +24,10 @@ public class User extends Person {
     }
     
     /**
+     * Add a Document to the User's associated library account.
      *
-     * @param doc
-     * @param lib
+     * @param doc the Document instance to add.
+     * @param lib the Library where the Document come from.
      * @throws et3.java.exceptions.UnregisteredUser
      * @throws et3.java.exceptions.DocumentQuotaReached
      */
@@ -34,22 +35,24 @@ public class User extends Person {
         LibraryAccount account = this.registredLib.get(lib.getId());
         
         if (account == null){
-            throw new UnregisteredUser();
+            throw new UnregisteredUser("Emprunt impossible : l'utilisateur"
+                    + " n'est pas inscrit dans la bibliothèque " + lib.getName() + ".");
         }
 
         account.addBorrowedDocument(doc);
     }
     
     /**
+     * Removes a Document from the user's associated library account.
      *
-     * @param d
+     * @param doc the Document instance to remove.
      * @throws et3.java.exceptions.NoDocumentFound
      */
-    public void returnDocument(Document d) throws NoDocumentFound {
+    public void returnDocument(Document doc) throws NoDocumentFound {
         boolean isRemoved = false;
         
         for(Map.Entry<Integer, LibraryAccount> entry : this.registredLib.entrySet()) {
-            if (isRemoved = entry.getValue().removeBorrowedDocument(d)) {
+            if (isRemoved = entry.getValue().removeBorrowedDocument(doc)) {
                 isRemoved = true;
                 break;
             }
@@ -61,17 +64,20 @@ public class User extends Person {
     }
     
     /**
+     * Registers the current User to the specified Library.
      *
-     * @param lib
-     * @param quota
+     * @param lib the library which the User should be registered.
+     * @param quota an integer corresponding to the number of Documents the
+     *              User is allowed to borrow.
      */
     public void subscribe(Library lib, int quota) {
         this.registredLib.put(lib.getId(), new LibraryAccount(quota));
     }
     
     /**
+     * Unsubscribes the current User from the specified Library.
      *
-     * @param lib
+     * @param lib the library which the User should be unregistered.
      */
     public void unsubscribe(Library lib) {
         this.registredLib.remove(lib.getId());
