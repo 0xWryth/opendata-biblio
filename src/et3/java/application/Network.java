@@ -5,6 +5,9 @@ import et3.java.model.*;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 /**
  * Network class represents all the objects known in the system. The user
  * interacts in the main() with it each time he wants to operate (adding,
@@ -29,6 +32,8 @@ public class Network {
         this.seriesList = new HashMap<>();
         this.users = new HashMap<>();
     }
+
+    // Adding methods
 
     /**
      * Add document in the network if it doesnt already exists.
@@ -93,7 +98,6 @@ public class Network {
             System.out.println("La librairie " + lib.getName() + " a été ajoutée avec succès !");
         }
     }
-    
 
     /**
      * Associates a new User to the network's collection and register it
@@ -140,6 +144,86 @@ public class Network {
                     + libraryId + " car elle n'existe pas dans le réseau.");
         }
     }
+
+    // Searching methods
+
+    /**
+     * Researching an author
+     * @param author part of the name/surname of a searched author
+     * @return a set of author
+     */
+    public Set<Entry<Integer, Author>> searchAuthor(String author) {
+        return this.authList.entrySet().stream().filter(auth -> (
+                auth.getValue().getName().contains(author) ||
+                        auth.getValue().getSurname().contains(author)
+        )).collect(Collectors.toSet());
+    }
+
+    /**
+     * Researching a document by its ISBN
+     * @param ISBN part of the researched document's ISBN
+     * @return a set of documents
+     */
+    public Set<Entry<String, Document>> searchISBN(String ISBN) {
+        return searchISBN(ISBN, false);
+    }
+
+    /**
+     * Researching a document by its ISBN
+     * @param ISBN the researched document's ISBN
+     * @param mustMatch true if the given ISBN must match with the researched documents
+     * @return a set of documents
+     */
+    public Set<Entry<String, Document>> searchISBN(String ISBN, boolean mustMatch) {
+        return this.docs.entrySet().stream().filter(doc -> (
+                doc.getValue() instanceof Book && (
+                        (mustMatch && ((Book) doc.getValue()).getISBN().equals(ISBN)) ||
+                                (!mustMatch && ((Book) doc.getValue()).getISBN().contains(ISBN)))
+        )).collect(Collectors.toSet());
+    }
+
+    /**
+     * Researching a document by its EAN
+     * @param EAN the researched document's EAN
+     * @return a set of documents
+     */
+    public Set<Entry<String, Document>> searchEAN(String EAN) {
+        return searchEAN(EAN, false);
+    }
+
+    /**
+     * Researching a document by its EAN
+     * @param EAN EAN the researched document's EAN
+     * @param mustMatch true if the given ISBN must match with the researched documents
+     * @return a set of documents
+     */
+    public Set<Entry<String, Document>> searchEAN(String EAN, boolean mustMatch) {
+        return this.docs.entrySet().stream().filter(doc -> (
+                (mustMatch && doc.getValue().getEAN().equals(EAN)) ||
+                        (!mustMatch && doc.getValue().getEAN().contains(EAN))
+        )).collect(Collectors.toSet());
+    }
+
+    /**
+     * Searching documents by a given type between two date
+     * @param type researched document type
+     * @param strBegining begining of the time interval
+     * @param strEnding ending of the time interval
+     * @return a set of documents
+     */
+    public Set<Entry<String, Document>> searchDocumentsByTypeAndDate(String type, String strBegining, String strEnding) {
+        int begining = Integer.parseInt(strBegining);
+        int ending = Integer.parseInt(strEnding);
+
+        return this.docs.entrySet().stream().filter(doc -> (
+                doc.getValue().getClass().getSimpleName().equals(type) &&
+                        !doc.getValue().getDate().equals("?") &&
+                        Integer.parseInt(doc.getValue().getDate().substring(0, Math.min(4, doc.getValue().getDate().length()))) >= begining &&
+                        Integer.parseInt(doc.getValue().getDate().substring(0, Math.min(4, doc.getValue().getDate().length()))) <= ending
+        )).collect(Collectors.toSet());
+    }
+
+    // Borrowing methods
     
     /**
      * Method in charge of the document borrowing.
