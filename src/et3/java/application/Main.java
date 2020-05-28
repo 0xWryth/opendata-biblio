@@ -5,16 +5,8 @@ import java.io.File;
 import et3.java.data.FileReader;
 import et3.java.exceptions.*;
 import et3.java.gui.Window;
-import et3.java.model.Author;
-import et3.java.model.Document;
-import et3.java.model.Library;
-import et3.java.model.Series;
-import et3.java.model.User;
+import et3.java.model.*;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.swing.*;
 
 /**
  * Main is the class where the user can operate on a "database" that contains
@@ -26,6 +18,8 @@ public class Main
     static Network network = null;
         
     static Scanner sc = new Scanner(System.in);
+
+    static Window f = new Window();
     
     public static void main(String[] args) {
         
@@ -75,6 +69,7 @@ public class Main
             System.out.println("[L]ister");
             System.out.println("[C]hercher");
             System.out.println("[E]mprunter / Retourner");
+            System.out.println("[O]uverte de l'interface graphique");
             System.out.println("\n[Q]uitter\n");
 
             String actionChoice = null;
@@ -94,6 +89,9 @@ public class Main
                 case "c":
                     performFinding();
                     break;
+                case "o":
+                    f.setVisible(true);
+                    break;
                 case "e":
                     performBorrowing();
                     break;
@@ -109,6 +107,9 @@ public class Main
         System.out.println("Fin du programme");    
     }
 
+    /**
+     * CLI adding methods
+     */
     private static void performAdding() {
         printSeparator();
         System.out.println("Que souhaitez vous ajouter ? (entrer la première lettre pour sélectionner l'action)\n");
@@ -266,6 +267,9 @@ public class Main
         
     }
 
+    /**
+     * CLI listing methods
+     */
     private static void performListing() {
         printSeparator();
         
@@ -282,8 +286,6 @@ public class Main
         do {
             listChoice = sc.nextLine();
         } while (listChoice.isEmpty());
-        
-        JFrame f = new Window();
         
         // TODO : Display one tab by one tab or all in one window doesnt matter ?
         
@@ -306,14 +308,11 @@ public class Main
             default:
                 System.err.println("Touche non reconnue !");
         }
-        
-        System.out.println("\nFermez la fenêtre \"Consultation\" pour revenir à l'accueil.\n");
-        
-        while (((Window) f).isActive()) { }     // wait window closing
-        
-        f.dispose();
     }
 
+    /**
+     * CLI finding methods
+     */
     private static void performFinding() {
         printSeparator();
         
@@ -331,22 +330,83 @@ public class Main
             searchChoice = sc.nextLine();
         } while (searchChoice.isEmpty());
         
-        
-        // TODO : use JFrame if more than XX results ??
-        
-        
         switch (searchChoice.toLowerCase()) {
             case "a":
-                // TODO : perform research by author (by name, surmane or both)
+                System.out.println("Entrez le nom/surnom de l'auteur à rechercher :");
+                String author = sc.nextLine();
+
+                ((Window) f).setResearchData("authors", author, network.searchAuthor(author));
                 break;
             case "i":
-                // TODO : perform research
+                System.out.println("Entrez l'ISBN du livre à rechercher :");
+                String ISBN = sc.nextLine();
+
+                ((Window) f).setResearchData("ISBN", ISBN, network.searchISBN(ISBN));
                 break;
             case "e":
-                // TODO : perform research
+                System.out.println("Entrez l'EAN du document à rechercher :");
+                String EAN = sc.nextLine();
+
+                ((Window) f).setResearchData("EAN", EAN, network.searchEAN(EAN));
                 break;
             case "t":
-                // TODO : perform research
+                printSeparator();
+
+                System.out.println("Choix du type de documents ? (entrez la lettre entre crochets)\n");
+
+                System.out.println("[C]omic");
+                System.out.println("[B]ook");
+                System.out.println("C[D]");
+                System.out.println("[V]ynil");
+                System.out.println("[G]ame");
+                System.out.println("Bo[A]rd game");
+                System.out.println("[P]lan");
+                System.out.println("Revie[W]");
+                System.out.println("[S]heet Music");
+                System.out.println("[O]ther");
+                System.out.println("\n[R]etour\n");
+
+                String docTypeChoice = null;
+
+                do {
+                    docTypeChoice = sc.nextLine();
+                } while (docTypeChoice.isEmpty());
+
+                String type = "";
+                switch (docTypeChoice.toLowerCase()) {
+                    case "c": type = "Comic"; break;
+                    case "b": type = "Book"; break;
+                    case "d": type = "CD"; break;
+                    case "v": type = "VinylDisc"; break;
+                    case "g": type = "VideoGame"; break;
+                    case "a": type = "BoardGame"; break;
+                    case "p": type = "Plan"; break;
+                    case "w": type = "Review"; break;
+                    case "s": type = "SheetMusic"; break;
+                    case "o": type = "Other"; break;
+                    case "r": return;
+                    default:
+                        System.err.println("Touche non reconnue !");
+                }
+
+                printSeparator();
+
+                System.out.println("Saisissez l'année de début de recherche : (sour le format yyyy)\n");
+                String strBegining = "";
+                do {
+                    strBegining = sc.nextLine();
+                } while (strBegining.length() != 4);
+
+                System.out.println("Saisissez l'année de fin de recherche : (sour le format yyyy)\n");
+                String strEnding = "";
+                do {
+                    strEnding = sc.nextLine();
+                } while (strEnding.length() != 4);
+
+
+                String strSearch = "[" + strBegining + "-" + strEnding + "] " + type;
+                ((Window) f).setResearchData("DATE", strSearch, network.searchDocumentsByTypeAndDate(type, strBegining, strBegining));
+
                 break;
             case "r":
                 return;
@@ -355,7 +415,9 @@ public class Main
         }
     }
 
-
+    /**
+     * CLI borrowing methods
+     */
     private static void performBorrowing() {
         int userId = -1;
         String docEAN;
@@ -522,7 +584,6 @@ public class Main
                 System.err.println("Touche non reconnue !");
         }
     }
-
     
     /**
      * Displays a '=' line for a more readable CLI.
