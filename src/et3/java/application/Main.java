@@ -271,6 +271,7 @@ public class Main
         System.out.println("[B]ibliothèques");
         System.out.println("[D]ocuments");
         System.out.println("[U]tilisateurs");
+        System.out.println("[S]éries");
         System.out.println("\n[R]etour\n");
         
         String listChoice = null;
@@ -294,6 +295,9 @@ public class Main
                 break;
             case "u":
                 ((Window) f).setUserData(network.getUsers());
+                break;
+            case "s":
+                ((Window) f).setSeriesData(network.getSeriesList());
                 break;
             case "r":
                 return;

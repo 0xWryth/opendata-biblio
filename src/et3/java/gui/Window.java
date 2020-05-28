@@ -30,6 +30,10 @@ public class Window extends JFrame {
     TabbedArray userTab =  new TabbedArray(userHeader);
 
     // ------------
+    String[] seriesHeader = {"Id", "Title"};
+    TabbedArray seriesTab =  new TabbedArray(seriesHeader);
+
+    // ------------
     String[] searchHeader = {""};
     TabbedArray searchTab =  new TabbedArray(searchHeader, "Dernière recherche");
 
@@ -51,6 +55,7 @@ public class Window extends JFrame {
         tab.addTab("Documents", docTab);
         tab.addTab("Author", authorTab);
         tab.addTab("Users", userTab);
+        tab.addTab("Series", seriesTab);
         tab.addTab("Recherche : -", searchTab);
         mainPanel.add(tab);
         setContentPane(mainPanel);
@@ -132,6 +137,15 @@ public class Window extends JFrame {
         ta.setModel(m);
     }
 
+    public void setSeriesData(HashMap<Integer, Series> hm) {
+        DefaultTableModel m = seriesTab.getModel();
+        hm.forEach((i, serie) -> {
+            Object[] toAdd = {serie.getId(), serie.getTitle()};
+            m.addRow(toAdd);
+        });
+        seriesTab.setModel(m);
+    }
+
     /**
      * Setting the research tab array data
      * @param type
@@ -139,9 +153,10 @@ public class Window extends JFrame {
      * @param data
      */
     public void setResearchData(String type, String strSearch, Object data) {
+        final int searchTabIndex = 6;
         switch (type) {
             case "authors":
-                tab.setTitleAt(4, "Recherche - Auteurs : " + strSearch);
+                tab.setTitleAt(searchTabIndex, "Recherche - Auteurs : " + strSearch);
                 searchTab.updateHeaders(authorArray);
                 HashMap<Integer, Author> authorData = new HashMap<Integer, Author>();
 
@@ -151,7 +166,7 @@ public class Window extends JFrame {
                 setAuthorData(authorData, searchTab);
                 break;
             case "ISBN":
-                tab.setTitleAt(4, "Recherche - ISBN : " + strSearch);
+                tab.setTitleAt(searchTabIndex, "Recherche - ISBN : " + strSearch);
                 searchTab.updateHeaders(docHeader);
                 HashMap<String, Document> docEAN = new HashMap<String, Document>();
 
@@ -161,7 +176,7 @@ public class Window extends JFrame {
                 setDocData((HashMap<String, Document>) docEAN, searchTab);
                 break;
             case "EAN":
-                tab.setTitleAt(4, "Recherche - EAN : " + strSearch);
+                tab.setTitleAt(searchTabIndex, "Recherche - EAN : " + strSearch);
                 searchTab.updateHeaders(docHeader);
                 HashMap<String, Document> docISBN = new HashMap<String, Document>();
 
@@ -171,7 +186,7 @@ public class Window extends JFrame {
                 setDocData((HashMap<String, Document>) docISBN, searchTab);
                 break;
             case "DATE":
-                tab.setTitleAt(5, "Recherche - Date : " + strSearch);
+                tab.setTitleAt(searchTabIndex, "Recherche - Date : " + strSearch);
                 searchTab.updateHeaders(docHeader);
                 HashMap<String, Document> docDATE = new HashMap<String, Document>();
 

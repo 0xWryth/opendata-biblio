@@ -416,6 +416,10 @@ public class Network {
         return libs;
     }
 
+    public HashMap<Integer, Series> getSeriesList() {
+        return seriesList;
+    }
+
     /**
      * Displays the network's Library collection.
      */
