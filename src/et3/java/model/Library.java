@@ -65,27 +65,28 @@ public class Library {
     
     /**
      *
-     * @param doc
+     * @param doc 
      */
     public void removeDocument(Document doc) {
-        if (this.documents.containsKey(doc)) {
+        if (this.hasDocument(doc)) {
             if (this.documents.get(doc) == 1) {
                 this.documents.remove(doc);
             } else {
                 this.documents.put(doc, this.documents.get(doc) - 1);
             }
-        } else {
-            System.err.println("Impossible de retirer ce document de la bibliothèque car il n'y est pas.");
         }
     }
     
     /**
      * 
      * @param lib
+     * @param doc
      */
-    public void exchangeDocument(Library lib) {
-        // TODO - implement Library.exchangeDocument
-        throw new UnsupportedOperationException();
+    public void exchangeDocument(Library lib, Document doc) {
+        if (this.hasDocument(doc)) {
+            this.removeDocument(doc);
+            lib.addDoc(doc, 1);
+        }
     }
     
     /**
@@ -123,5 +124,13 @@ public class Library {
 
     public String getName() {
         return name;
+    }
+
+    public boolean hasDocument(Document doc) {
+        return this.documents.containsKey(doc);
+    }
+
+    public boolean hasUser(User user) {
+        return this.registredUsers.contains(user);
     }
 }

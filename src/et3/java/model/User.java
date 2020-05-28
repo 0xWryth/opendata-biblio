@@ -38,11 +38,21 @@ public class User extends Person {
     /**
      *
      * @param d
-     * @param l
+     * @throws et3.java.exceptions.NoDocumentFound
      */
-    public void returnDocument(et3.java.model.Document d, et3.java.model.Library l) {
-        // TODO - implement User.returnDocument
-        throw new UnsupportedOperationException();
+    public void returnDocument(Document d) throws NoDocumentFound {
+        boolean isRemoved = false;
+        
+        for(Map.Entry<Integer, LibraryAccount> entry : this.registredLib.entrySet()) {
+            if (isRemoved = entry.getValue().removeBorrowedDocument(d)) {
+                isRemoved = true;
+                break;
+            }
+        }
+        
+        if (!isRemoved) {
+            throw new NoDocumentFound("Impossible de rendre ce document. Il n'a pas été emprunté par l'utilisateur.");
+        }
     }
     
     /**

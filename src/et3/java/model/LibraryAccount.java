@@ -1,6 +1,7 @@
 package et3.java.model;
 
 import et3.java.exceptions.DocumentQuotaReached;
+import et3.java.exceptions.NoDocumentFound;
 import java.util.ArrayList;
 
 /**
@@ -27,5 +28,14 @@ public class LibraryAccount {
         }
         
         this.docs.add(doc);
+    }
+
+    /**
+     *
+     * @param doc
+     * @return 
+     */
+    public boolean removeBorrowedDocument(Document doc) {
+        return this.docs.remove(doc);
     }
 }

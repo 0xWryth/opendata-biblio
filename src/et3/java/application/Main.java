@@ -3,14 +3,11 @@ package et3.java.application;
 import java.io.File;
 
 import et3.java.data.FileReader;
-import et3.java.exceptions.DocumentBorrowingException;
-import et3.java.exceptions.EANAlreadyExists;
-import et3.java.exceptions.ISBNAlreadyExists;
+import et3.java.exceptions.*;
 import et3.java.gui.Window;
 import et3.java.model.Author;
 import et3.java.model.Document;
 import et3.java.model.Library;
-import et3.java.model.Plan;
 import et3.java.model.Series;
 import et3.java.model.User;
 import java.util.Scanner;
@@ -279,13 +276,6 @@ public class Main
         
         System.out.println("\nFermez la fenêtre \"Consultation\" pour revenir à l'accueil.\n");
         
-        
-        // Why are 'd' or 'b' or 'u' sometime skipped ?!?
-        // Why in these cases the window isnt active  ?!?
-        // forced to put a    Thread.sleep(100);    to let the window open up...
-    
-        System.out.println("[debug] isActive: " + f.isActive());
-        
         while (((Window) f).isActive()) { }     // wait window closing
         
         f.dispose();
@@ -334,6 +324,11 @@ public class Main
 
 
     private static void performBorrowing() {
+        int userId = -1;
+        String docEAN;
+        String docISBN = "";
+        int libId = -1;
+        
         printSeparator();
         
         System.out.println("Action emprunt/retour ? (entrez la lettre entre crochets)\n");
@@ -360,67 +355,136 @@ public class Main
                 
                 // Use ID instead of name/surname ?
                 System.out.println("Identifiant de l'utilisateur qui souhaite emprunter :");
-                int userId = sc.nextInt();
+                do {
+                    try {
+                        userId = Integer.parseInt(sc.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.err.println(e.getMessage());
+                    }
+                } while (userId < 0);
+
                 
-                // find document to borrow
                 System.out.println("EAN du document à emprunter : (nullable)");
-                String borrowedDocEAN = sc.nextLine();
+                docEAN = sc.nextLine();
                 
-                String borrowedDocISBN = "";
-                if (borrowedDocEAN.isEmpty()) {
+                if (docEAN.isEmpty()) {
                     do {
                         System.out.println("ISBN du document à emprunter : (not null)");
-                        borrowedDocISBN = sc.nextLine();
-                    } while (borrowedDocISBN.isEmpty());
+                        docISBN = sc.nextLine();
+                    } while (docISBN.isEmpty());
                 } else {
                     System.out.println("ISBN du document à emprunter : (nullable)");
-                    borrowedDocISBN = sc.nextLine();
+                    docISBN = sc.nextLine();
                 }
                 
                 System.out.println("Saisisez où emprunter le document parmi les bibliothèques ci-dessous :");
                 network.listLibraries();
                 
-                // TODO : what do if NaN ?
-                int libId = sc.nextInt();
+                do {
+                    try {
+                        libId = Integer.parseInt(sc.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.err.println(e.getMessage());
+                    }
+                } while (libId < 0);
                 
                 try {
-                    network.registerBorrowing(userId, borrowedDocEAN + borrowedDocISBN, libId);
+                    network.registerBorrowing(userId, docEAN + docISBN, libId);
                 } catch (DocumentBorrowingException dbe) {
                     System.err.println(dbe.getMessage());
                 }
                 break;
+            
             case "r":
-                // TODO
+                System.out.println("Identifiant de l'utilisateur qui souhaite emprunter :");
+                do {
+                    try {
+                        userId = Integer.parseInt(sc.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.err.println(e.getMessage());
+                    }
+                } while (userId < 0);
+
                 
-                // user = getUser("user")
-                // Return document
-                // user.returnDocument(carteAlpes, newLib);
+                System.out.println("EAN du document à emprunter : (nullable)");
+                docEAN = sc.nextLine();
+                
+                if (docEAN.isEmpty()) {
+                    do {
+                        System.out.println("ISBN du document à emprunter : (not null)");
+                        docISBN = sc.nextLine();
+                    } while (docISBN.isEmpty());
+                } else {
+                    System.out.println("ISBN du document à emprunter : (nullable)");
+                    docISBN = sc.nextLine();
+                }
+                
+                System.out.println("Saisisez où emprunter le document parmi les bibliothèques ci-dessous :");
+                network.listLibraries();
+                
+                do {
+                    try {
+                        libId = Integer.parseInt(sc.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.err.println(e.getMessage());
+                    }
+                } while (libId < 0);
+                
+                try {
+                    network.recordDocumentReturn(userId, docEAN + docISBN, libId);
+                } catch (UnregisteredUser | NoDocumentFound ex) {
+                    System.err.println(ex.getMessage());
+                }
                 break;
-            case "t":
-                // TODO
-                
+            
+            case "t":                
                 System.out.println("Bibliothèque d'origine ? ... :");
                 network.listLibraries();
                 
-                // TODO : what do if NaN ?
-                int lib1 = sc.nextInt();
+                int libId1 = -1;
+                do {
+                    try {
+                        libId1 = Integer.parseInt(sc.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.err.println(e.getMessage());
+                    }
+                } while (libId1 < 0);
                 
                 System.out.println("Bibliothèque destinataire ? ... :");
                 network.listLibraries();
                 
-                // TODO : what do if NaN ?
-                int lib2 = sc.nextInt();
+                int libId2 = -1;
+                do {
+                    try {
+                        libId2 = Integer.parseInt(sc.nextLine());
+                    } catch (NumberFormatException e) {
+                        System.err.println(e.getMessage());
+                    }
+                } while (libId2 < 0);
                 
                 System.out.println("EAN du document à transférer ? ... :");
-                String docEAN = sc.nextLine();
+                docEAN = sc.nextLine();
                 
-                // Doc doc = getDocByEAN(docEAN);
+                if (docEAN.isEmpty()) {
+                    do {
+                        System.out.println("ISBN du document à emprunter : (not null)");
+                        docISBN = sc.nextLine();
+                    } while (docISBN.isEmpty());
+                } else {
+                    System.out.println("ISBN du document à emprunter : (nullable)");
+                    docISBN = sc.nextLine();
+                }
                 
-                // if (doc != null && lib1.hasDoc())
-                //    lib1.exchangeDocument(Library lib2)
+                try {
+                    network.transferDocument(libId1, libId2, docEAN + docISBN);
+                } catch (DocumentNotAvailable ex) {
+                    System.err.println(ex.getMessage());
+                }
                 break;
+                
             case "a":
                 return;
+                
             default:
                 System.err.println("Touche non reconnue !");
         }

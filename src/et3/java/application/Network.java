@@ -74,10 +74,6 @@ public class Network {
         this.seriesList.putIfAbsent(series.getId(), series);
     }
 
-    public HashMap<Integer, Library> getLibs() {
-        return libs;
-    }
-
     // Change parameter to String to do the new Library() inside the method ??
     
     public void addLibrary(Library lib) {
@@ -92,17 +88,143 @@ public class Network {
     }
     
 
-    
-    public void listLibraries() {
-//        for (TypeKey name: example.keySet()){
-//            String key = name.toString();
-//            String value = example.get(name).toString();  
-//            System.out.println(key + " " + value);  
-//        }
+    /**
+     *
+     * @param user
+     * @param libId
+     */
+    public void addUser(User user, int libId) {
+        Library lib = this.libs.get(libId);
         
-        this.libs.entrySet().forEach(entry -> {
-            System.out.println(entry.getValue());  
-         });
+        if (lib != null) {
+            User existingUser = this.users.putIfAbsent(user.getId(), user);
+        
+            if (existingUser != null) {
+                System.err.println("L'utilisateur " + user.toString() + " n'a pas été ajoutée car il semble déjà exister dans le réseau.");
+                return;
+            }
+            
+            lib.registerUser(user);
+            System.out.println("L'utilisateur " + user.toString() + " a bien été créé et inscrit à la librairie " + lib.getName());
+        } else {
+            // Add the unknown library on the fly ??
+            System.err.println("La bibliothèque associée ne fait pas partie du réseau.");
+        }
+    }
+    
+    /**
+     *
+     * @param userId
+     * @param docKey
+     * @param libId
+     * @throws et3.java.exceptions.DocumentBorrowingException
+     */
+    public void registerBorrowing(int userId, String docKey, int libId) throws DocumentBorrowingException {
+        User user;
+        if ((user = this.users.get(userId)) == null) {
+            // TODO : throw new Exception();    // ???
+            System.err.println("Impossible d'effectuer l'emprunt : l'utilisateur n'existe pas..");
+            return;
+        }
+        
+        Document doc;
+        if ((doc = this.docs.get(docKey)) == null) {
+            // TODO : throw new Exception();    // ???
+            System.err.println("Impossible d'effectuer l'emprunt : le document n'existe pas..");
+            return;
+        }
+        
+        Library lib;
+        if ((lib = this.libs.get(libId)) == null) {
+            // TODO : throw new Exception();    // ???
+            System.err.println("Impossible d'effectuer l'emprunt : la bibliothèque n'existe pas..");
+            return;
+        }
+        
+        if (!lib.hasDocument(doc)){
+            throw new DocumentNotAvailable("Impossible de retirer ce document de la bibliothèque car il n'y est pas.");
+        }
+        
+        user.borrowDocument(doc, lib);
+        lib.removeDocument(doc);
+        System.out.println("Le document a bien été emprunté à la bibliothèque " + lib.getName() + " par " + user.toString() + ".");
+    }
+
+    /**
+     *
+     * @param userId
+     * @param docKey
+     * @param libId
+     * @throws et3.java.exceptions.UnregisteredUser
+     * @throws et3.java.exceptions.NoDocumentFound
+     */
+    public void recordDocumentReturn(int userId, String docKey, int libId) throws UnregisteredUser, NoDocumentFound {
+        User user;
+        if ((user = this.users.get(userId)) == null) {
+            // TODO : throw new Exception();    // ???
+            System.err.println("Impossible de rendre le document : l'utilisateur n'existe pas..");
+            return;
+        }
+        
+        Document doc;
+        if ((doc = this.docs.get(docKey)) == null) {
+            // TODO : throw new Exception();    // ???
+            System.err.println("Impossible de rendre le document : ses \"indentifiants\" ne correspondent pas..");
+            return;
+        }
+        
+        Library lib;
+        if ((lib = this.libs.get(libId)) == null) {
+            // TODO : throw new Exception();    // ???
+            System.err.println("Impossible de rendre le document : la bibliothèque n'existe pas..");
+            return;
+        }
+        
+        if (!lib.hasUser(user)) {
+            throw new UnregisteredUser("Impossible de rendre le document : l'utilisateur doit être abonné à la bibliothèque " + lib.getName());
+        }
+        
+        user.returnDocument(doc);
+        lib.addDoc(doc, 1);
+        System.out.println("Le document a bien été retourné à la bibliothèque " + lib.getName() + " par " + user.toString() + ".");
+    }
+    
+    /**
+     *
+     * @param libId1
+     * @param libId2
+     * @param docKey
+     * @throws et3.java.exceptions.DocumentNotAvailable
+     */
+    public void transferDocument(int libId1, int libId2, String docKey) throws DocumentNotAvailable {
+        Library lib1;
+        if ((lib1 = this.libs.get(libId1)) == null) {
+            // TODO : throw new Exception();    // ???
+            System.err.println("Impossible de rendre le document : la bibliothèque n'existe pas..");
+            return;
+        }
+        
+        Library lib2;
+        if ((lib2 = this.libs.get(libId2)) == null) {
+            // TODO : throw new Exception();    // ???
+            System.err.println("Impossible de rendre le document : la bibliothèque n'existe pas..");
+            return;
+        }
+        
+        Document doc;
+        if ((doc = this.docs.get(docKey)) == null) {
+            // TODO : throw new Exception();    // ???
+            System.err.println("Impossible de rendre le document : ses \"indentifiants\" ne correspondent pas..");
+            return;
+        }
+        
+        if (!lib1.hasDocument(doc)){
+            throw new DocumentNotAvailable("Impossible de retirer ce document de la bibliothèque car il n'y est pas.");
+        }
+        
+        lib1.exchangeDocument(lib2, doc);
+        System.out.println("La bibliothèque " + lib1.getName() + " vient de tranférer le document "
+                + doc.getTitle() + " à la bibliothèque " + lib2.getName() + ".");
     }
     
     
@@ -155,69 +277,6 @@ public class Network {
         return existingAuthor;
     }
 
-    /**
-     *
-     * @param user
-     * @param libId
-     */
-    public void addUser(User user, int libId) {
-        Library lib = this.libs.get(libId);
-        
-        if (lib != null) {
-            User existingUser = this.users.putIfAbsent(user.getId(), user);
-        
-            if (existingUser != null) {
-                System.err.println("L'utilisateur " + user.toString() + " n'a pas été ajoutée car il semble déjà exister dans le réseau.");
-                return;
-            }
-            
-            lib.registerUser(user);
-            System.out.println("L'utilisateur " + user.toString() + " a bien été créé et inscrit à la librairie " + lib.getName());
-        } else {
-            // Add the unknown library on the fly ??
-            System.err.println("La bibliothèque associée ne fait pas partie du réseau.");
-        }
-    }
-    
-    /**
-     *
-     * @param userId
-     * @param docId
-     * @param libId
-     * @throws et3.java.exceptions.DocumentBorrowingException
-     */
-    public void registerBorrowing(int userId, String docId, int libId) throws DocumentBorrowingException {
-        User user;
-        if ((user = this.users.get(userId)) == null) {
-            // TODO :
-            // throw new Exception();
-            System.err.println("Cet utilisateur n'existe pas");
-            return;
-        }
-        
-        Document doc;
-        if ((doc = this.docs.get(docId)) == null) {
-            // TODO :
-            // throw new Exception();
-            System.err.println("Ce document n'existe pas");
-            return;
-        }
-        
-        Library lib;
-        if ((lib = this.libs.get(libId)) == null) {
-            // TODO :
-            // throw new Exception();
-            System.err.println("Cette bibliothèque n'existe pas");
-            return;
-        }
-        
-//        if (docNotInLib){
-//            throw new DocumentNotAvailable();
-//        }
-        
-        user.borrowDocument(doc, lib);
-    }
-
     public HashMap<String, Document> getDocs() {
         return docs;
     }
@@ -228,5 +287,16 @@ public class Network {
 
     public HashMap<Integer, User> getUsers() {
         return users;
+    }
+
+    public HashMap<Integer, Library> getLibs() {
+        return libs;
+    }
+
+    
+    public void listLibraries() {        
+        this.libs.entrySet().forEach(entry -> {
+            System.out.println(entry.getValue());  
+         });
     }
 }

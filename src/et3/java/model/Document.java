@@ -59,7 +59,7 @@ public abstract class Document {
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + " : \"" + title
+        return this.getClass().getSimpleName() + " : \"" + getTitle()
                 + "\", author=" + author + ", EAN=" + EAN
                 + ", published in " + date + " by " + publisher;
     }
@@ -73,6 +73,10 @@ public abstract class Document {
     }
 
     public String getTitle() {
+        return title.length() > 15 ? title.substring(0, 14) + "..." : title;
+    }
+
+    public String getFullTitle() {
         return title;
     }
 
