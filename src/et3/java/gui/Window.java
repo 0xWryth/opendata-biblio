@@ -70,11 +70,13 @@ public class Window extends JFrame {
      */
     public void setLibraryData(HashMap<Integer, Library> hm) {
         DefaultTableModel m = libTab.getModel();
+        String[][] emptyData = {};
+        DefaultTableModel newModel = new DefaultTableModel(emptyData, libraryHeader);
         hm.forEach((i, l) -> {
             Object[] toAdd = {l.getId(), l.getName()};
-            m.addRow(toAdd);
+            newModel.addRow(toAdd);
         });
-        libTab.setModel(m);
+        libTab.setModel(newModel);
     }
 
     /**
@@ -92,13 +94,14 @@ public class Window extends JFrame {
      */
     public void setDocData(HashMap<String, Document> docs, TabbedArray ta) {
         DefaultTableModel m = ta.getModel();
-
+        String[][] emptyData = {};
+        DefaultTableModel newModel = new DefaultTableModel(emptyData, docHeader);
         docs.forEach((s, d) -> {
             String ISBN = d instanceof Book ? ((Book) d).getISBN() : "";
             Object[] toAdd = {d.getClass().getSimpleName(), d.getEAN(), d.getFullTitle(), d.getDate(), d.getPublisher(), ISBN};
-            m.addRow(toAdd);
+            newModel.addRow(toAdd);
         });
-        ta.setModel(m);
+        ta.setModel(newModel);
     }
 
 
@@ -108,11 +111,13 @@ public class Window extends JFrame {
      */
     public void setUserData(HashMap<Integer, User> hm) {
         DefaultTableModel m = userTab.getModel();
+        String[][] emptyData = {};
+        DefaultTableModel newModel = new DefaultTableModel(emptyData, userHeader);
         hm.forEach((i, u) -> {
             Object[] toAdd = {u.getId(), u.getName(), u.getSurname()};
-            m.addRow(toAdd);
+            newModel.addRow(toAdd);
         });
-        userTab.setModel(m);
+        userTab.setModel(newModel);
     }
 
     /**
@@ -130,20 +135,24 @@ public class Window extends JFrame {
      */
     public void setAuthorData(HashMap<Integer, Author> hm, TabbedArray ta) {
         DefaultTableModel m = ta.getModel();
+        String[][] emptyData = {};
+        DefaultTableModel newModel = new DefaultTableModel(emptyData, authorArray);
         hm.forEach((i, auth) -> {
             Object[] toAdd = {auth.getId(), auth.getName(), auth.getSurname()};
-            m.addRow(toAdd);
+            newModel.addRow(toAdd);
         });
-        ta.setModel(m);
+        ta.setModel(newModel);
     }
 
     public void setSeriesData(HashMap<Integer, Series> hm) {
         DefaultTableModel m = seriesTab.getModel();
+        String[][] emptyData = {};
+        DefaultTableModel newModel = new DefaultTableModel(emptyData, seriesHeader);
         hm.forEach((i, serie) -> {
             Object[] toAdd = {serie.getId(), serie.getTitle()};
-            m.addRow(toAdd);
+            newModel.addRow(toAdd);
         });
-        seriesTab.setModel(m);
+        seriesTab.setModel(newModel);
     }
 
     /**
@@ -196,5 +205,9 @@ public class Window extends JFrame {
                 setDocData((HashMap<String, Document>) docDATE, searchTab);
                 break;
         }
+    }
+
+    public void setTabIndex(int index) {
+        tab.setSelectedIndex(index);
     }
 }

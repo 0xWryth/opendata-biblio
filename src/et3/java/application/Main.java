@@ -103,7 +103,7 @@ public class Main
             }
         } while (!exitAsked);
         
-        
+        f.dispose();
         System.out.println("Fin du programme");    
     }
 
@@ -286,18 +286,23 @@ public class Main
         switch (listChoice.toLowerCase()) {
             case "a":
                 ((Window) f).setAuthorData(network.getAuthList());
+                ((Window) f).setTabIndex(3);
                 break;
             case "b":
                 ((Window) f).setLibraryData(network.getLibs());
+                ((Window) f).setTabIndex(1);
                 break;
             case "d":
                 ((Window) f).setDocData(network.getDocs());
+                ((Window) f).setTabIndex(2);
                 break;
             case "u":
                 ((Window) f).setUserData(network.getUsers());
+                ((Window) f).setTabIndex(4);
                 break;
             case "s":
                 ((Window) f).setSeriesData(network.getSeriesList());
+                ((Window) f).setTabIndex(5);
                 break;
             case "r":
                 return;
@@ -332,18 +337,21 @@ public class Main
                 String author = sc.nextLine();
 
                 ((Window) f).setResearchData("authors", author, network.searchAuthor(author));
+                ((Window) f).setTabIndex(6);
                 break;
             case "i":
                 System.out.println("Entrez l'ISBN du livre à rechercher :");
                 String ISBN = sc.nextLine();
 
                 ((Window) f).setResearchData("ISBN", ISBN, network.searchISBN(ISBN));
+                ((Window) f).setTabIndex(6);
                 break;
             case "e":
                 System.out.println("Entrez l'EAN du document à rechercher :");
                 String EAN = sc.nextLine();
 
                 ((Window) f).setResearchData("EAN", EAN, network.searchEAN(EAN));
+                ((Window) f).setTabIndex(6);
                 break;
             case "t":
                 printSeparator();
@@ -402,6 +410,7 @@ public class Main
 
                 String strSearch = "[" + strBegining + "-" + strEnding + "] " + type;
                 ((Window) f).setResearchData("DATE", strSearch, network.searchDocumentsByTypeAndDate(type, strBegining, strBegining));
+                ((Window) f).setTabIndex(6);
 
                 break;
             case "r":
