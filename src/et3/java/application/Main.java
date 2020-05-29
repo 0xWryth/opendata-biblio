@@ -482,23 +482,23 @@ public class Main
                 break;
             
             case "r":
-                System.out.println("Identifiant de l'utilisateur qui souhaite emprunter :");
+                System.out.println("Identifiant de l'utilisateur qui souhaite rendre un document :");
                 userId = inputPositiveInteger();
                 
-                System.out.println("EAN du document à emprunter : (nullable)");
+                System.out.println("EAN du document à rendre : (nullable)");
                 docEAN = sc.nextLine();
                 
                 if (docEAN.isEmpty()) {
                     do {
-                        System.out.println("ISBN du document à emprunter : (not null)");
+                        System.out.println("ISBN du document à rendre : (not null)");
                         docISBN = sc.nextLine();
                     } while (docISBN.isEmpty());
                 } else {
-                    System.out.println("ISBN du document à emprunter : (nullable)");
+                    System.out.println("ISBN du document à rendre : (nullable)");
                     docISBN = sc.nextLine();
                 }
                 
-                System.out.println("Saisisez où emprunter le document parmi les bibliothèques ci-dessous :");
+                System.out.println("Saisisez où rendre le document parmi les bibliothèques ci-dessous :");
                 network.listLibraries();
                 libId = inputPositiveInteger();
                 
