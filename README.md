@@ -25,9 +25,18 @@ Things you need to install the project :
 Here are some instructions on how to get the development env running.
 
 First, clone this repository with the following command :
+
 `git clone https://github.com/adepreis/opendata-biblio`
 
 Then create the Java project from `/src` folder using your favorite IDE.
 
-### Documentation
+### Run the latest version
+
+Don't forget to give the path of the .csv when you lauch the application, for example :
+
+`java -jar opendata-biblio.jar ./src/et3/java/data/data.csv`
+
+---
+
+## Documentation
 You can find the project's Javadoc in the `/doc` folder and the UML class diagram in the `/uml` folder.

@@ -7,6 +7,9 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.*;
 
+/**
+ * Main window of the GUI.
+ */
 public class Window extends JFrame {
     private JPanel mainPanel = new JPanel(new GridLayout(0, 1));
     private JTabbedPane tab = new JTabbedPane();

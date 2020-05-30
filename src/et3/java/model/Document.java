@@ -81,6 +81,10 @@ public abstract class Document {
         return EAN;
     }
 
+    /**
+     * Returns a shorten title version for display purpose.
+     * @return a maximum 15 char long string
+     */
     public String getTitle() {
         return title.length() > 15 ? title.substring(0, 14) + "..." : title;
     }

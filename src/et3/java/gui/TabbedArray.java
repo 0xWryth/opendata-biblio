@@ -7,6 +7,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+/**
+ * TabbedArray is the class for all tabs of main Window.
+ * A TabbedArray object encapsulates a pane, some controls and labels...
+ */
 public class TabbedArray extends JPanel {
     private JScrollPane scrollPane;
     private DefaultTableModel model;
@@ -17,7 +21,7 @@ public class TabbedArray extends JPanel {
     // Constructors
 
     /**
-     * Generating a TabbedArray with an array having some headers
+     * Generating a TabbedArray with an array having some headers.
      * @param headers
      */
     TabbedArray(String[] headers) {
@@ -25,7 +29,7 @@ public class TabbedArray extends JPanel {
     }
 
     /**
-     * Generating a TabbedArray with an array having some headers and a custom update text
+     * Generating a TabbedArray with an array having some headers and a custom update text.
      * @param headers
      * @param lastUpdateText
      */

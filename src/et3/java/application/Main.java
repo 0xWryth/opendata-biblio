@@ -280,8 +280,6 @@ public class Main
             listChoice = sc.nextLine();
         } while (listChoice.isEmpty());
         
-        // TODO : Display one tab by one tab or all in one window doesnt matter ?
-        
         
         switch (listChoice.toLowerCase()) {
             case "a":

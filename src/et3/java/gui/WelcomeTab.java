@@ -5,9 +5,15 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyledDocument;
 
+/**
+ * Display a welcome message in a tab of the main window.
+ */
 public class WelcomeTab extends JPanel {
     private JTextPane textPane = new JTextPane();
 
+    /**
+     * Constructs an empty <tt>WelcomeTab</tt>.
+     */
     public WelcomeTab() {
         this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 
