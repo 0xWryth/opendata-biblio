@@ -86,6 +86,11 @@ local.properties
 
 
 
+
+### Visual Paradigm ###
+/vpproject
+
+
 # Mac OS X
 # metadata
 .DS_Store
